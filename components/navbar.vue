@@ -3,7 +3,7 @@
     :class="[
       'fixed top-0 left-0 w-full z-50 transition-all duration-300',
       navState === 'transparent'
-        ? 'bg-gradient-to-t from-transparent to-black/100 translate-y-0 p-6 text-white'
+        ? 'bg-gradient-to-t from-transparent to-black/70 translate-y-0 p-6 text-white'
         : navState === 'hidden'
         ? '-translate-y-full p-0'
         : 'bg-black/100 translate-y-0 p-6 text-white',
@@ -34,12 +34,13 @@
           </li>
         </div>
       </div>
-      <div class="flex justify-center gap-4">
-        <div class="hidden lg:flex relative items-center">
+      <div class="flex justify-center gap-4 items-center">
+        <div class="hidden lg:flex relative">
           <input
             type="text"
             placeholder="Search..."
             class="pl-4 pr-10 py-1 border rounded-lg"
+            @click="openpopup"
           />
           <span
             ><font-awesome-icon
@@ -47,14 +48,13 @@
               class="absolute right-3 top-1/2 -translate-y-1/2"
           /></span>
         </div>
-        <button
-          class="bg-[#a0e13e] px-4 py-1 rounded-lg text-shadow-md drop-shadow-xl/50 cursor-pointer"
-        >
-          SIGN IN
-        </button>
+        <font-awesome-icon
+          icon="fa-solid fa-heart"
+          class="flex text-3xl cursor-pointer"
+        />
         <font-awesome-icon
           icon="fa-regular fa-circle-user"
-          class="flex items-center text-4xl"
+          class="flex text-3xl cursor-pointer"
         />
       </div>
     </div>
