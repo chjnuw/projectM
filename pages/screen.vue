@@ -1,11 +1,9 @@
 <template>
-  
+  <PopupsearchM></PopupsearchM>
 </template>
 
-<script>
-export default {
-
-}
+<script setup>
+import PopupsearchM from '../components/popupsearchM.vue';
 </script>
 
 <style>

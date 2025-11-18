@@ -28,11 +28,18 @@
               : 'right-[5%] text-left',
           ]"
         >
-          <h2 class="text-5xl font-bold text-shadow-lg/40 drop-shadow-lg/70 text-center">{{ item.title }}</h2>
-          <p class="mt-4 text-shadow-lg/40 drop-shadow-lg/70 text-2xl">{{ item.description }}</p>
+          <h2
+            class="text-5xl font-bold text-shadow-lg/40 drop-shadow-lg/70 text-center"
+          >
+            {{ item.title }}
+          </h2>
+          <p class="mt-4 text-shadow-lg/40 drop-shadow-lg/70 text-2xl">
+            {{ item.description }}
+          </p>
           <div class="justify-self-center space-x-14 mt-10">
             <button
               class="bg-green-500 w-40 h-13 rounded-xl text-shadow-md drop-shadow-xl/50 cursor-pointer"
+              @click="openPopup(item)"
             >
               <span class="pr-1"
                 ><font-awesome-icon icon="fa-solid fa-circle-info" /></span
@@ -74,6 +81,11 @@
         @click="goToSlide(i)"
       ></div>
     </div>
+    <PopupM
+      v-if="showPopup"
+      :movie="selectedMovie"
+      @close="showPopup = false"
+    />
   </div>
 </template>
 
@@ -149,6 +161,17 @@ onUnmounted(() => {
   clearInterval(interval);
   clearTimeout(timeout);
 });
+
+
+import PopupM from '~/components/PopupM.vue';
+
+const showPopup = ref(false);
+const selectedMovie = ref(null);
+
+const openPopup = (movie) => {
+  selectedMovie.value = movie;
+  showPopup.value = true;
+};
 </script>
 
 <style></style>
