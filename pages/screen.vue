@@ -3,9 +3,7 @@
 </template>
 
 <script setup>
-import PopupsearchM from '../components/popupsearchM.vue';
+import PopupsearchM from "../components/popupsearchM.vue";
 </script>
 
-<style>
-
-</style>
+<style></style>

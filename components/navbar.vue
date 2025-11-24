@@ -43,16 +43,18 @@
             @click="openpopup"
           />
           <span
-            ><font-awesome-icon
+            ><FontAwesomeIcon
               icon="fa-solid fa-magnifying-glass"
               class="absolute right-3 top-1/2 -translate-y-1/2"
           /></span>
         </div>
-        <font-awesome-icon
+
+        <FontAwesomeIcon
           icon="fa-solid fa-heart"
           class="flex text-3xl cursor-pointer"
         />
-        <font-awesome-icon
+
+        <FontAwesomeIcon
           icon="fa-regular fa-circle-user"
           class="flex text-3xl cursor-pointer"
         />
@@ -62,12 +64,24 @@
 </template>
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 
-const navState = ref("transparent"); // "transparent" | "hidden" | "black"
+const route = useRoute();
+const navState = ref("black"); // "transparent" | "hidden" | "black"
 let lastScroll = 0;
 
+
+if (route.path === "/") {
+  navState.value = "transparent";
+}
 const handleScroll = () => {
   const currentScroll = window.scrollY;
+
+  if (route.path !== "/") {
+    navState.value = currentScroll > lastScroll ? "hidden" : "black";
+    lastScroll = currentScroll;
+    return;
+  }
 
   if (currentScroll <= 50) {
     // อยู่บนสุด → โปร่ง
@@ -90,7 +104,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
 });
-
 </script>
 
 <style>

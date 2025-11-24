@@ -10,28 +10,81 @@
       class="fixed inset-0 flex items-center justify-center z-50 min-h-screen bg-black/50 backdrop-blur-sm"
     >
       <div
-        class="rounded-2xl w-[60%] h-[75%] overflow-y-auto grid grid-cols-4 custom-scrollbar"
+        class="rounded-2xl w-[65%] h-[80%] overflow-y-auto grid grid-cols-4 custom-scrollbar"
       >
         <div
-          class="col-span-1 bg-[#000000] p-4 text-white flex flex-col items-center justify-start"
+          v-if="selectedItem"
+          class="col-span-1 bg-[#000000] p-4 text-white flex flex-col items-center justify-start object-contain"
         >
           <img
-            src="/img/luca.png"
-            alt="posterLuca"
-            class="rounded-xl w-auto h-auto object-cover border-2"
-          />
-          <h1 class="p-4 w-full flex items-center justify-center">
-            Luca (2021)
-          </h1>
-
-          <img src="/img/review.png" alt="" class="mt-3" />
-          <h2 class="mt-6">Director</h2>
-          <img
-            src="/img/directorex..png"
+            :src="selectedItem.poster"
             alt=""
-            class="w-[130px] h-[130px] mt-3"
+            class="rounded-xl aspect-[2/3] w-64 border-2"
           />
-          <h2 class="mt-3">Enrico Casarosa</h2>
+          <h1
+            v-if="selectedItem"
+            class="p-2 w-full flex items-center justify-center text-lg font-bold text-center"
+          >
+            {{ selectedItem.title }}
+          </h1>
+          <p
+            v-if="selectedItem"
+            class="p-2 text-shadow-lg/40 drop-shadow-lg/100 text-sm flex items-center justify-center gap-2"
+          >
+            <span
+              class="px-2 py-1 border border-white/40 bg-white/10 backdrop-blur-md rounded-md text-xs justify-center flex items-center font-bold"
+            >
+              {{ selectedItem.ageRating }}
+            </span>
+
+            <span class="">·</span>
+
+            <span class="text-xs justify-center flex items-center">{{
+              selectedItem.time
+            }}</span>
+          </p>
+          <p class="flex flex-wrap gap-2 p-2 text-sm justify-center">
+            <button
+              v-for="tag in selectedItem.tages"
+              :key="tag.id"
+              class="p-2 bg-gray-800 rounded-full text-white cursor-pointer hover:text-black hover:bg-gray-600 transition-colors duration-200"
+            >
+              # {{ tag.name }}
+            </button>
+          </p>
+          <img src="/img/review.png" alt="" class="p-4 self-start" />
+          <div class="p-4 flex justify-center text-center flex-col gap-2">
+            <div class="p-2">
+              <p class="text-base font-bold">Status :</p>
+              <p class="text-sm">Released</p>
+            </div>
+            <div class="p-2">
+              <p class="text-base font-bold">Original Language :</p>
+              <p class="text-sm">English</p>
+            </div>
+            <div class="p-2">
+              <p class="text-base font-bold">Budget :</p>
+              <p class="text-sm">150,000,000.00</p>
+            </div>
+            <div class="p-2">
+              <p class="text-base font-bold">Revenue :</p>
+              <p class="text-sm">-</p>
+            </div>
+          </div>
+
+          <div
+            class="w-34 aspect-[2/3] bg-white rounded-2xl flex flex-col mt-3"
+          >
+            <img
+              src="/img/directorex..png"
+              alt=""
+              class="w-full h-full object-cover rounded-2xl"
+            />
+            <div class="h-auto w-full text-center text-black p-2 rounded-2xl">
+              <h2 class="font-bold text-md">Director</h2>
+              <p class="text-sm">Enrico Casarosa</p>
+            </div>
+          </div>
           <button
             class="w-[100px] h-[35px] bg-[#90CB38] flex items-center justify-center gap-2 rounded-sm px-2 mt-3 mb-2 cursor-pointer hover:bg-[#ffffff]/65"
           >
@@ -40,41 +93,63 @@
           </button>
         </div>
 
-        <div class="bg-[#0B0A0A] text-white col-span-3 h-full flex flex-col">
-          <div class="relative bg-[#0B0A0A] max-h-auto overflow-hidden">
+        <div
+          class="bg-[#0B0A0A] text-white col-span-3 h-full flex flex-col items-center justify-center"
+        >
+          <div
+            class="relative bg-[#0B0A0A] w-full max-w-full mx-auto aspect-video overflow-hidden"
+          >
             <img
-              src="/img/image.png"
+              :src="currentImage"
               alt=""
-              class="w-full h-full object-cover"
+              class="w-full h-full object-contain object-center transition-opacity duration-700"
             />
             <button
               class="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full hover:bg-black/70 cursor-pointer"
               @click="$emit('close')"
             >
-              <font-awesome-icon
+              <FontAwesomeIcon
                 icon="fa-solid fa-xmark"
                 class="text-white cursor-pointer"
               />
             </button>
-            <font-awesome-icon
+            <FontAwesomeIcon
               icon="fa-solid fa-play"
               class="text-4xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
             />
           </div>
-          <div
-            class="relative w-full h-auto justify-center items-center text-white overflow-hidden overflow-x-auto custom-scrollbar group"
-          >
-            <div class="flex h-full gap-2 p-3">
+          <div class="relative w-full h-auto text-white overflow-hidden">
+            <div
+              class="flex gap-2 p-3 snap-center px-2 overflow-x-auto custom-scrollbar"
+            >
               <div
-                v-for="item in items"
-                :key="item.id"
-                class="flex-shrink-0 w-64 h-32 relative bg-cover bg-top border-2"
-                :style="{ backgroundImage: 'url(' + item.image + ')' }"
-              ></div>
+                v-for="img in filteredImages"
+                :key="img"
+                class="flex-shrink-0 w-auto h-20 bg-center bg-no-repeat overflow-hidden cursor-pointer"
+                :class="{
+                  'border-3': currentImage === img,
+                  '': selectedItem.id !== img,
+                }"
+                @click="currentImage = img"
+              >
+                <img :src="img" class="max-w-full max-h-full object-contain" />
+              </div>
             </div>
           </div>
-          <div class="w-full h-auto p-5">
-            <p class="">
+          <div class="w-[95%] h-auto text-white">
+            <div class="p-2 flex w-full">
+              <button
+                class="w-[115px] h-[35px] bg-[#ffffff]/65 flex items-center justify-center gap-2 rounded-sm p-4 mt-3 cursor-pointer hover:bg-[#90CB38]"
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-heart"
+                  class="w-[22px] h-[22px] inline-block"
+                />
+                <span class="text-white">Favorite</span>
+              </button>
+            </div>
+            <p class="mt-2 text-2xl font-bold">Overview</p>
+            <p class="p-2">
               Luca’s summer adventure follows a young sea monster who disguises
               himself as a human. He forms a strong friendship with Alberto, and
               together they try to keep their true identities a secret while
@@ -86,10 +161,14 @@
                 see more</span
               >
             </p>
-            <h2 class="mt-4">Actor :</h2>
-            <div
-              class="flex gap-3.5 overflow-x-auto custom-scrollbar p-4 snap-x snap-start"
-            >
+            <div class="p-4 flex items-center gap-3">
+              <h2 class="font-bold text-2xl leading-none whitespace-nowrap">
+                Actor
+              </h2>
+              <div class="flex-1 border-b-2"></div>
+            </div>
+
+            <div class="flex gap-3.5 overflow-x-auto custom-scrollbar p-4">
               <imgNameAct
                 v-for="(actor, index) in visibleActors"
                 :key="index"
@@ -104,22 +183,45 @@
                 >
                   <h1>
                     Sell All<br /><span
-                      ><font-awesome-icon icon="fa-solid fa-arrow-right"
+                      ><FontAwesomeIcon icon="fa-solid fa-arrow-right"
                     /></span>
                   </h1>
                 </button>
               </div>
             </div>
-            <div class="flex justify-center">
-              <button
-                class="w-[115px] h-[35px] bg-[#ffffff]/65 flex items-center justify-center gap-2 rounded-sm px-2 mt-3 mb- cursor-pointer hover:bg-[#90CB38]"
+            <div class="p-4 flex items-center gap-3">
+              <h2 class="font-bold text-2xl leading-none whitespace-nowrap">
+                Crew
+              </h2>
+              <div class="flex-1 border-b-2"></div>
+            </div>
+
+            <div class="flex gap-3.5 overflow-x-auto custom-scrollbar p-4">
+              <imgNameAct
+                v-for="(actor, index) in visibleActors"
+                :key="index"
+                :img="actor.profile"
+                :name="actor.name"
+              />
+              <div
+                class="flex justify-center items-center ml-4 w-24 flex-shrink-0 p-2"
               >
-                <font-awesome-icon
-                  icon="fa-solid fa-heart"
-                  class="w-[22px] h-[22px] inline-block mt-1.5"
-                />
-                <span class="text-white">Favorite</span>
-              </button>
+                <button
+                  class="hover:bg-gray-600 p-4 rounded-full flex flex-nowrap items-center text-green-500 cursor-pointer"
+                >
+                  <h1>
+                    Sell All<br /><span
+                      ><FontAwesomeIcon icon="fa-solid fa-arrow-right"
+                    /></span>
+                  </h1>
+                </button>
+              </div>
+            </div>
+            <div class="p-4 flex items-center gap-3">
+              <h2 class="font-bold text-2xl leading-none whitespace-nowrap">
+                Recommendations
+              </h2>
+              <div class="flex-1 border-b-2"></div>
             </div>
           </div>
         </div>
@@ -129,87 +231,53 @@
 </template>
 <script setup>
 import imgNameAct from "./imgNameAct.vue";
-import { ref, onMounted, onUnmounted, computed, defineEmits } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+const props = defineProps({
+  selectedId: [String, Number],
+});
 
 //จำกัดการแสดงนักแสดง
 const visibleLimit = ref(10);
 const visibleActors = computed(() => actors.slice(0, visibleLimit.value));
 const actors = [
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
-  { name: "Jacob Tremblay", profile: "/img/luca.png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
+  { name: "Jacob Tremblay", profile: "/img/directorex..png" },
 ];
-const items = ref([
-  {
-    id: 1,
-    title: "The Tunnel to Summer, the Exit of Goodbyes (2022)",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/image.png",
-    textPosition: "left",
-  },
-  {
-    id: 2,
-    title: "The Tunnel to Summer, the Exit of Goodbyes (2022)",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/gb.png",
-    textPosition: "left",
-  },
-  {
-    id: 3,
-    title: "CHANSAW MAN",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/chan.png",
-    textPosition: "right",
-  },
-  {
-    id: 4,
-    title: "Friren: Beyond Journey's End",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/fri.png",
-    textPosition: "left",
-  },
-]);
+
 const emit = defineEmits(["close"]);
+const { items } = mockdata();
+const selectedItem = ref(
+  items.value.find((i) => i.id == props.selectedId) || items.value[0]
+);
+const currentImage = ref(
+  selectedItem.value.backdrop?.[0] || selectedItem.value.image
+);
+
+function selectImage(item) {
+  currentImage.value = item.image;
+}
+const filteredImages = computed(() => {
+  const found = items.value.find((i) => i.id === selectedItem.value.id);
+  return found?.backdrop || [];
+});
+let interval = null;
+
+onMounted(() => {
+  interval = setInterval(() => {
+    const index = filteredImages.value.indexOf(currentImage.value);
+    currentImage.value =
+      filteredImages.value[(index + 1) % filteredImages.value.length];
+  }, 10000); // เปลี่ยนทุก 10 วิ
+});
+
+onUnmounted(() => clearInterval(interval));
 </script>
 <style scoped>
 .popup-fade-enter-from {
@@ -223,5 +291,8 @@ const emit = defineEmits(["close"]);
 }
 .popup-fade-leave-to {
   opacity: 0;
+}
+img {
+  transition: opacity 0.3s ease;
 }
 </style>

@@ -1,7 +1,12 @@
 <template>
   <div class="p-8">
-    <h1 class="font-bold text-2xl">POPULAR MOVIES</h1>
-    <div class="gap-4 py-6 px-2 w-[95%] flex flex-nowrap overflow-x-auto custom-scrollbar justify-self-center">
+    <div class="p-4 flex items-center gap-3">
+      <h2 class="font-bold text-2xl whitespace-nowrap">POPULAR MOVIES</h2>
+      <div class="flex-1 border-b-2"></div>
+    </div>
+    <div
+      class="gap-4 py-6 px-2 w-[95%] flex flex-nowrap overflow-x-auto custom-scrollbar justify-self-center"
+    >
       <div
         v-for="item in items"
         :key="item.id"
@@ -16,8 +21,8 @@
           class="hover:bg-gray-600 p-4 rounded-full flex flex-nowrap items-center text-green-500 cursor-pointer"
         >
           <h1>
-            Sell All<br><span
-              ><font-awesome-icon icon="fa-solid fa-arrow-right"
+            Sell All<br /><span
+              ><FontAwesomeIcon  icon="fa-solid fa-arrow-right"
             /></span>
           </h1>
         </button>
@@ -91,6 +96,4 @@ const items = [
 ];
 </script>
 
-<style>
-
-</style>
+<style></style>

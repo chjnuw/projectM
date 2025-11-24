@@ -3,7 +3,7 @@
     class="relative bg-black text-white flex items-center justify-center h-50 border-t-2 border-gray-700"
   >
     <button
-      class="absolute top-0 translate-y-[-50%] bg-gray-800 hover:bg-gray-700 text-white font-bold p-4 rounded-full duration-300 cursor-pointer text-2xl"
+      class="fixed top-[85vh] translate-y-[-50%] bg-gray-800 hover:bg-gray-700 text-white font-bold p-4 rounded-full duration-300 cursor-pointer text-2xl"
       :class="[
         buttonOnTop === 'show'
           ? 'opacity-100 translate-y-0 transition-all duration-500 '
@@ -28,13 +28,23 @@ let lastScroll = 0;
 const buttonOnTop = ref("hidden");
 
 const handleScroll = () => {
-  const currentScroll = window.scrollY;
+  const currentScroll = window.scrollY ;
 
-  if (currentScroll > 200) {
+  if (currentScroll <= 50) {
+    buttonOnTop.value = "hidden";
+    lastScroll = currentScroll;
+    return;
+  }
+
+  if (currentScroll < lastScroll) {
+    // กำลังเลื่อนขึ้น
     buttonOnTop.value = "show";
   } else {
+    // กำลังเลื่อนลง
     buttonOnTop.value = "hidden";
   }
+
+  lastScroll = currentScroll;
 };
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);

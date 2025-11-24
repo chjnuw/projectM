@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative w-full h-[85vh] justify-center items-center text-white overflow-hidden group"
+    class="relative w-full h-[100vh] justify-center items-center text-white overflow-hidden group"
   >
     <div
       class="flex transition-transform duration-700 ease-in-out h-full"
@@ -9,9 +9,14 @@
       <div
         v-for="item in items"
         :key="item.id"
-        class="flex-shrink-0 w-full h-full relative bg-cover bg-top"
-        :style="{ backgroundImage: 'url(' + item.image + ')' }"
+        class="flex-shrink-0 w-full h-full overflow-hidden relative"
       >
+        <img
+          :src="item.backdrop?.[0] || item.image"
+          alt=""
+          class="w-full h-full object-cover object-top"
+        />
+
         <div
           :class="[
             'absolute text-white p-4 overflow-hidden',
@@ -22,7 +27,7 @@
         ></div>
         <span
           :class="[
-            'absolute top-[15%] text-white p-4 w-1/3 ',
+            'absolute top-[15%] text-white p-4 w-1/3',
             item.textPosition === 'left'
               ? 'left-[5%] text-left'
               : 'right-[5%] text-left',
@@ -34,17 +39,25 @@
             {{ item.title }}
           </h2>
           <p
-            class="mt-4 text-shadow-lg/40 drop-shadow-lg/100 text-base justify-center flex"
+            class="mt-4 p-2 text-shadow-lg/40 drop-shadow-lg/100 text-base justify-center flex text-center w-full items-center gap-2"
           >
-            {{
-              item.ageRating +
-              " ● " +
-              (item.tages
-                ? item.tages.map((tag) => tag.name).join(" , ")
-                : "") +
-              " ● " +
-              item.time
-            }}
+            <span
+              class="px-2 py-1 border border-white/40 bg-white/10 backdrop-blur-md rounded-md h-full font-bold"
+            >
+              {{ item.ageRating }}
+            </span>
+            <span class="">·</span>
+            <span class="w-auto h-full">{{ item.time }}</span>
+          </p>
+          <p
+            class="text-shadow-lg/40 drop-shadow-lg/100 text-base justify-center flex text-center w-full items-center"
+          >
+            <span class="w-full"
+              ><span class="px-2">●</span
+              >{{
+                item.tages ? item.tages.map((tag) => tag.name).join(" , ") : ""
+              }}<span class="px-2">●</span></span
+            >
           </p>
           <p class="mt-4 text-shadow-lg/40 drop-shadow-lg/100 text-2xl">
             {{ item.description }}
@@ -52,17 +65,18 @@
           <div class="justify-self-center space-x-14 mt-10">
             <button
               class="bg-green-500 w-40 h-13 rounded-xl text-shadow-md drop-shadow-xl/50 cursor-pointer"
-              @click="openPopup(item)"
+              @click="openPopup(item.id)"
             >
               <span class="pr-1"
-                ><font-awesome-icon icon="fa-solid fa-circle-info" /></span
-              >More info
+                ><FontAwesomeIcon  icon="fa-solid fa-circle-info" /></span
+              >
+              More info
             </button>
             <button
               class="bg-gray-500 w-40 h-13 rounded-xl text-shadow-md drop-shadow-xl/50 cursor-pointer"
             >
               <span class="pr-1"
-                ><font-awesome-icon icon="fa-regular fa-heart" /></span
+                ><FontAwesomeIcon  icon="fa-regular fa-heart" /></span
               >Favorite
             </button>
           </div>
@@ -74,7 +88,7 @@
         class="text-white text-2xl p-4 bg-black/30 hover:bg-gray-700 rounded-full cursor-pointer opacity-0 -translate-x-6 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
         @click="prevSlide"
       >
-        <font-awesome-icon icon="fa-solid fa-arrow-left" />
+        <FontAwesomeIcon  icon="fa-solid fa-arrow-left" />
       </button>
     </div>
     <div class="flex absolute top-1/2 right-0 w-auto px-4">
@@ -82,7 +96,7 @@
         class="text-white text-2xl p-4 bg-black/30 hover:bg-gray-700 rounded-full cursor-pointer opacity-0 translate-x-6 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
         @click="nextSlide"
       >
-        <font-awesome-icon icon="fa-solid fa-arrow-right" />
+        <FontAwesomeIcon  icon="fa-solid fa-arrow-right" />
       </button>
     </div>
     <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
@@ -96,7 +110,7 @@
     </div>
     <PopupM
       v-if="showPopup"
-      :movie="selectedMovie"
+      :selectedId="selectedId"
       @close="showPopup = false"
     />
   </div>
@@ -104,53 +118,8 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
-const items = ref([
-  {
-    id: 1,
-    title: "The Tunnel to Summer, the Exit of Goodbyes (2022)",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/gb.png",
-    textPosition: "left",
-  },
-  {
-    id: 2,
-    title: "CHANSAW MAN",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/chan.png",
-    textPosition: "right",
-  },
-  {
-    id: 3,
-    title: "Friren: Beyond Journey's End",
-    tages: [
-      { id: 1, name: "Adventure" },
-      { id: 2, name: "Fantasy" },
-      { id: 3, name: "Slice of Life" },
-    ],
-    ageRating: "13+",
-    time: "1h 50m",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "/img/fri.png",
-    textPosition: "left",
-  },
-]);
+import { mockdata } from "~/composables/mockdata";
+const { items } = mockdata();
 
 const currentIndex = ref(0);
 let interval = null;
@@ -190,6 +159,11 @@ const goToSlide = (index) => {
   pauseSlider();
 };
 
+const selectedId = ref(null);
+const selectedItem = computed(() =>
+  items.find((i) => i.id == selectedId.value)
+);
+
 onMounted(() => {
   startAutoSlide();
   window.addEventListener("keydown", handleEsc);
@@ -203,12 +177,11 @@ onUnmounted(() => {
 import PopupM from "~/components/PopupM.vue";
 
 const showPopup = ref(false);
-const selectedMovie = ref(null);
 
-const openPopup = (movie) => {
-  selectedMovie.value = movie;
+function openPopup(id) {
+  selectedId.value = id;
   showPopup.value = true;
-};
+}
 
 watch(showPopup, (val) => {
   document.body.style.overflow = val ? "hidden" : "";

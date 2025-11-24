@@ -9,5 +9,5 @@ import { faFacebook, faGithub } from '@fortawesome/free-brands-svg-icons'
 // เพิ่มไอคอนเข้าคลัง
 library.add(faUser, faHome, faTrash, faEdit, faHeartSolid, faHeartRegular, faFacebook, faGithub, faMagnifyingGlass, faCircleUser, faPlay, faArrowLeft, faArrowRight ,faArrowUp, faCircleInfo, faXmark)
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 })
