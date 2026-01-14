@@ -2,7 +2,7 @@
   <div class="flex flex-wrap justify-center">
     <div class="w-full text-start rounded-md">
       <p class="font-bold text-xl mb-2 w-full text-start text-white">Genres</p>
-      <button
+      <!-- <button
         v-for="genre in genres"
         :key="genre.id"
         @click="toggleGenre(genre.id)"
@@ -14,8 +14,8 @@
         "
       >
          {{ genre.name }}
-      </button>
-      <!-- <div
+      </button> -->
+      <div
         v-for="genre in genres"
         :key="genre.id"
         @click="toggleGenre(genre.id)"
@@ -27,7 +27,7 @@
         "
       >
         {{ genre.name }}
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

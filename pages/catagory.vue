@@ -17,7 +17,8 @@
       <div
         class="bg-[#0B0A0A] text-white w-1/4 flex flex-wrap items-start justify-center rounded-xl"
       >
-        <div class="w-full p-4 justify-start">
+        <SidebarFilterSkeleton v-if="isLoadingGenres" />
+        <div v-else class="w-full p-4 justify-start">
           <h2 class="font-bold text-2xl mb-2 w-full text-start"></h2>
 
           <div class="relative inline-block text-left w-full p-2">
@@ -83,30 +84,52 @@
                 class="w-full"
               />
             </div>
-            <Streaming class="w-full my-4" />
+            <Streaming @update="onProviderChange" class="my-4" />
           </div>
         </div>
       </div>
 
       <div class="bg-[#0B0A0A] text-white w-3/4 flex rounded-xl h-full">
         <section class="w-full p-4">
-          <h2 class="font-bold text-4xl mb-2 w-full text-start">movies</h2>
-          <div
-            class="grid grid-cols-5 gap-4 px-4 py-6 items-center justify-center"
-          >
-            <CardM
-              v-for="movie in movies"
-              :key="movie.id"
-              :movie="movie"
-              class=""
-              @open="openPopup"
+          <div class="flex justify-around items-center w-full mb-4">
+            <h2 class="font-bold text-4xl mb-2 text-start p-2">ภาพยนตร์</h2>
+            <FilterSortbyAZ 
+              :items="movies"
+              keyName="title"
+              @update="updateMovies"
+              class="flex-shrink-0"
             />
           </div>
+          <transition name="fade" mode="out-in">
+            <SkeletonCatagorySkeletonMovieList v-if="isLoadingMovies" :count="10" />
+            <div
+              v-else
+              class="grid grid-cols-5 gap-4 px-4 py-6 items-center justify-center"
+            >
+              <CardM
+                v-for="movie in movies"
+                :key="movie.id"
+                :movie="movie"
+                class=""
+                @open="openPopup"
+              />
+              <div v-if="isLoadingMore">
+                <SkeletonCatagorySkeletonCard v-for="i in 5" :key="'loading-' + i" />
+              </div>
+            </div>
+          </transition>
           <PopupM
             v-if="showPopup"
             :selectedId="selectedId"
             @close="showPopup = false"
           />
+          <button
+            v-if="currentPage < totalPages"
+            @click="loadMore"
+            class="px-6 py-3 bg-[#A0E13E] rounded-lg font-bold justify-center mt-4 hover:bg-[#90CB38] transition w-full cursor-pointer flex items-center"
+          >
+            ดูเพิ่มเติม
+          </button>
         </section>
       </div>
     </section>
@@ -114,9 +137,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted, watch, onUnmounted, unref, Ref,computed } from "vue";
 import type { Movie, Genre } from "../Type/tmdb";
 import { useTMDB } from "../composables/useTMDB";
+
 
 const {
   getPopularMovies,
@@ -125,62 +149,122 @@ const {
   getNowPlaying,
   getGenres,
   getMoviesByGenres,
-  getWatchProviders,
+  getMovieProviders,
+  discoverMoviesByProviders,
 } = useTMDB();
 const movies = ref<Array<Movie>>([]);
 const movieGenres = ref<Genre[]>([]);
-
+const isLoadingMovies = ref(true);
+const isLoadingGenres = ref(true);
+const isLoadingMore = ref(false);
+const currentPage = ref(1);
+const totalPages = ref(1);
 const currentCategory = ref("popular");
 
 const categories = [
-  { key: "popular", label: "Popular" },
-  { key: "top_rated", label: "Top Rated" },
-  { key: "upcoming", label: "Upcoming" },
-  { key: "now_playing", label: "Now Playing" },
+  { key: "popular", label: "ยอดนิยม" },
+  { key: "now_playing", label: "กำลังฉาย" },
+  { key: "upcoming", label: "โปรแกรมหน้า" },
+  { key: "top_rated", label: "รีวิวสูงสุด" },
 ];
+
+const getMovies = async (
+  category: string,
+  genres: number[],
+  providers: number[],
+  page = 1
+) => {
+  let res;
+
+  if (providers.length) {
+    let filteredCategory = "";
+    if (category === "now_playing") filteredCategory = "now_playing";
+    else if (category === "upcoming") filteredCategory = "upcoming";
+
+    res = await discoverMoviesByProviders(
+      providers,
+      genres, // genre filter
+      sortMap[category], // sort
+      page
+    );
+
+    // กรองผลลัพธ์ตาม Category ภายใน frontend
+    if (filteredCategory === "now_playing") {
+      res.results = res.results.filter(
+        (movie) => new Date(movie.release_date) <= new Date()
+      );
+    } else if (filteredCategory === "upcoming") {
+      res.results = res.results.filter(
+        (movie) => new Date(movie.release_date) > new Date()
+      );
+    }
+  } else if (genres.length) {
+    // มีแค่ Genre → ใช้ discover แบบไม่ส่ง providers
+    res = await discoverMoviesByProviders([], genres, sortMap[category], page);
+  } else {
+    switch (category) {
+      case "popular":
+        res = await getPopularMovies(page);
+        break;
+      case "now_playing":
+        res = await getNowPlaying(page);
+        break;
+      case "upcoming":
+        res = await getUpcomingMovies(page);
+        break;
+      case "top_rated":
+        res = await getTopRatedMovies(page);
+        break;
+      default:
+        res = await getPopularMovies(page);
+    }
+  }
+
+  totalPages.value = res?.total_pages ?? 1;
+  return res;
+};
 
 const selectCategory = async (key: string) => {
   currentCategory.value = key;
-  let res = null;
+  selectedGenres.value = [];
+  currentPage.value = 1;
+  isLoadingMovies.value = true;
 
-  switch (key) {
-    case "popular":
-      res = await getPopularMovies();
-      break;
-    case "top_rated":
-      res = await getTopRatedMovies();
-      break;
-    case "upcoming":
-      res = await getUpcomingMovies();
-      break;
-    case "now_playing":
-      res = await getNowPlaying();
-      break;
-  }
-
+  const res = await getMovies(
+    key,
+    selectedGenres.value,
+    selectedProviders.value,
+    currentPage.value
+  );
   movies.value = res?.results ?? [];
+  isLoadingMovies.value = false;
 };
 // โหลด default category
-onMounted(() => selectCategory(currentCategory.value));
 onMounted(async () => {
+  await selectCategory(currentCategory.value);
+
+  isLoadingGenres.value = true;
   const res = await getGenres();
-  if (res) {
-    movieGenres.value = res.genres;
-    console.log("Genres loaded:", movieGenres.value);
-  }
+  if (res) movieGenres.value = res.genres;
+  isLoadingGenres.value = false;
 });
+
 const selectedGenres = ref<number[]>([]);
 
 const onGenreChange = async (newGenres: number[]) => {
   selectedGenres.value = newGenres;
+  currentPage.value = 1;
+  isLoadingMovies.value = true;
 
-  if (selectedGenres.value.length === 0) {
-    await selectCategory(currentCategory.value); // โหลด category ปกติ
-  } else {
-    const genreQuery = selectedGenres.value.join(",");
-    const res = await getMoviesByGenres(genreQuery, currentCategory.value);
-    movies.value = res?.results ?? [];
-  }
+  const res = await getMovies(
+    currentCategory.value,
+    selectedGenres.value,
+    selectedProviders.value,
+    currentPage.value
+  );
+
+  movies.value = res?.results ?? [];
+  isLoadingMovies.value = false;
 };
 
 const openFillterDrop = ref(true);
@@ -193,9 +277,23 @@ function openPopup(id) {
   showPopup.value = true;
 }
 
+const isPageLoading = computed(() => {
+  return isLoadingMovies.value || isLoadingMore.value;
+});
+
+watch(
+  isPageLoading,
+  (loading) => {
+    document.body.style.cursor = loading ? "wait" : "default";
+  },
+  { immediate: true }
+);
+
+
 watch(showPopup, (val) => {
   document.body.style.overflow = val ? "hidden" : "";
 });
+
 
 const handleEsc = (e) => {
   if (e.key === "Escape") showPopup.value = false;
@@ -206,7 +304,66 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener("keydown", handleEsc);
+  document.body.style.cursor = "default";
+  document.body.style.overflow = "";
 });
+
+async function loadMore() {
+  if (currentPage.value >= totalPages.value || isLoadingMore.value) return;
+
+  isLoadingMore.value = true;
+
+  try {
+    const nextPage = currentPage.value + 1;
+
+    const res = await getMovies(
+      currentCategory.value,
+      selectedGenres.value,
+      selectedProviders.value,
+      nextPage
+    );
+
+    if (res?.results?.length) {
+      const existingIds = new Set(movies.value.map((m) => m.id));
+      const newMovies = res.results.filter((m) => !existingIds.has(m.id));
+
+      if (newMovies.length) {
+        movies.value.push(...newMovies);
+        currentPage.value = nextPage;
+      }
+    }
+  } finally {
+    isLoadingMore.value = false; 
+  }
+}
+const selectedProviders = ref<number[]>([]);
+
+function onProviderChange(providers: number[]) {
+  selectedProviders.value = providers;
+  currentPage.value = 1;
+  isLoadingMovies.value = true;
+
+  getMovies(
+    currentCategory.value,
+    selectedGenres.value,
+    selectedProviders.value,
+    currentPage.value
+  ).then((res) => {
+    movies.value = res?.results ?? [];
+    isLoadingMovies.value = false;
+  });
+}
+
+const sortMap = {
+  popular: "popularity.desc",
+  top_rated: "vote_average.desc",
+  upcoming: "release_date.desc",
+  now_playing: "primary_release_date.desc",
+};
+
+function updateMovies(sorted: Movie[] | Ref<Movie[]>) {
+  movies.value = Array.isArray(unref(sorted)) ? unref(sorted) : [];
+}
 </script>
 
 <style>
@@ -222,5 +379,14 @@ onUnmounted(() => {
 }
 .animate-fade {
   animation: fade 0.15s ease-in-out;
+}
+.fade-enter-from {
+  opacity: 0;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.fade-enter-active {
+  transition: opacity 0.3s ease;
 }
 </style>

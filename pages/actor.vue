@@ -5,7 +5,7 @@
     <h2 class="font-bold text-6xl text-center my-4">actor</h2>
     <section class="w-full p-4 flex flex-wrap justify-start">
       <div class="flex gap-4 p-4">
-        <CardM />
+ 
       </div>
     </section>
   </div>
