@@ -1,6 +1,6 @@
 <template>
   <div class="bg-black mt-22 flex flex-col">
-    <div class="z-50 mx-[10%]">
+    <div class="z-40 mx-[10%]">
       <Breadcrumb />
     </div>
     <!-- <section
@@ -13,17 +13,17 @@
       />
       <div class="absolute w-[60%] aspect[3/2] bg-black top-40  z-50">1</div>
     </section> รูปภาพข้างบน กำลังคิดรูปแบบ-->
-    <section class="flex gap-4 p-4 mb-[10rem] max-w-[80%] mx-auto items-start">
+    <section class="flex gap-4 p-4 mb-20 max-w-[80%] mx-auto">
       <div
-        class="bg-[#0B0A0A] text-white w-1/4 flex flex-wrap items-start justify-center rounded-xl"
+        class="bg-[#0B0A0A] text-white w-1/4 flex flex-wrap items-start justify-center rounded-xl h-full"
       >
-        <SidebarFilterSkeleton v-if="isLoadingGenres" />
+        <SkeletonCatagorySkeletonSidebarFilter v-if="isLoadingGenres" />
         <div v-else class="w-full p-4 justify-start">
           <h2 class="font-bold text-2xl mb-2 w-full text-start"></h2>
 
           <div class="relative inline-block text-left w-full p-2">
             <button
-              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/20 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
+              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/40 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
               @click="openFillterDrop = !openFillterDrop"
             >
               {{
@@ -41,7 +41,7 @@
               class="p-2 mt-2 bg-[#0B0A0A] shadow-lg rounded-md z-50 flex flex-wrap animate-fade"
             >
               <p class="font-bold text-xl mb-2 w-full text-start text-white">
-                Type
+                ประเภท
               </p>
               <button
                 v-for="category in categories"
@@ -63,10 +63,10 @@
           </div>
           <div class="relative inline-block text-left w-full p-2">
             <button
-              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/20 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
+              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/40 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
               @click="openStreamimgDrop = !openStreamimgDrop"
             >
-              {{ "Fillter" }}
+              {{ "แท็ก" }}
               <Icon
                 icon="weui:arrow-outlined"
                 class="ml-1 w-4 h-4 text-white transition-transform duration-200"
@@ -91,30 +91,37 @@
 
       <div class="bg-[#0B0A0A] text-white w-3/4 flex rounded-xl h-full">
         <section class="w-full p-4">
-          <div class="flex justify-around items-center w-full mb-4">
-            <h2 class="font-bold text-4xl mb-2 text-start p-2">ภาพยนตร์</h2>
-            <FilterSortbyAZ 
+          <div class="flex justify-between w-full mb-4 p-2">
+            <h2 class="font-bold text-4xl text-start">ภาพยนตร์</h2>
+            <FilterSortbyAZ
               :items="movies"
               keyName="title"
               @update="updateMovies"
-              class="flex-shrink-0"
+              class=""
             />
           </div>
+          <div class="border-t border-white/10 mb-6"></div>
+
           <transition name="fade" mode="out-in">
-            <SkeletonCatagorySkeletonMovieList v-if="isLoadingMovies" :count="10" />
+            <SkeletonCatagorySkeletonMovieList
+              v-if="isLoadingMovies"
+              :count="20"
+            />
             <div
               v-else
-              class="grid grid-cols-5 gap-4 px-4 py-6 items-center justify-center"
+              class="grid gap-4 px-4 pt-6"
+              style="
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+              "
             >
               <CardM
                 v-for="movie in movies"
                 :key="movie.id"
                 :movie="movie"
-                class=""
                 @open="openPopup"
               />
-              <div v-if="isLoadingMore">
-                <SkeletonCatagorySkeletonCard v-for="i in 5" :key="'loading-' + i" />
+              <div v-for="i in 20" :key="'loading-' + i">
+                <SkeletonCatagorySkeletonCard v-if="isLoadingMore" />
               </div>
             </div>
           </transition>
@@ -126,7 +133,7 @@
           <button
             v-if="currentPage < totalPages"
             @click="loadMore"
-            class="px-6 py-3 bg-[#A0E13E] rounded-lg font-bold justify-center mt-4 hover:bg-[#90CB38] transition w-full cursor-pointer flex items-center"
+            class="px-6 py-3 bg-[#A0E13E] rounded-lg font-bold justify-center hover:bg-[#90CB38] transition w-full cursor-pointer flex items-center mb-4"
           >
             ดูเพิ่มเติม
           </button>
@@ -137,11 +144,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onUnmounted, unref, Ref,computed } from "vue";
+import { ref, onMounted, watch, onUnmounted, unref, Ref, computed } from "vue";
 import type { Movie, Genre } from "../Type/tmdb";
 import { useTMDB } from "../composables/useTMDB";
-
-
+import { useGlobalLoading } from "../composables/useGlobalLoading";
+const { start, stop } = useGlobalLoading();
 const {
   getPopularMovies,
   getTopRatedMovies,
@@ -225,29 +232,46 @@ const getMovies = async (
 };
 
 const selectCategory = async (key: string) => {
-  currentCategory.value = key;
-  selectedGenres.value = [];
-  currentPage.value = 1;
+  start();
   isLoadingMovies.value = true;
 
-  const res = await getMovies(
-    key,
-    selectedGenres.value,
-    selectedProviders.value,
-    currentPage.value
-  );
-  movies.value = res?.results ?? [];
-  isLoadingMovies.value = false;
+  try {
+    currentCategory.value = key;
+    selectedGenres.value = [];
+    currentPage.value = 1;
+
+    const res = await getMovies(
+      key,
+      selectedGenres.value,
+      selectedProviders.value,
+      currentPage.value
+    );
+
+    movies.value = res?.results ?? [];
+  } finally {
+    isLoadingMovies.value = false;
+    stop();
+  }
 };
+
 // โหลด default category
 onMounted(async () => {
-  await selectCategory(currentCategory.value);
-
+  start();
+  isLoadingMovies.value = true;
   isLoadingGenres.value = true;
-  const res = await getGenres();
-  if (res) movieGenres.value = res.genres;
-  isLoadingGenres.value = false;
+
+  try {
+    await selectCategory(currentCategory.value);
+
+    const res = await getGenres();
+    if (res) movieGenres.value = res.genres;
+  } finally {
+    isLoadingMovies.value = false;
+    isLoadingGenres.value = false;
+    stop();
+  }
 });
+
 
 const selectedGenres = ref<number[]>([]);
 
@@ -255,16 +279,20 @@ const onGenreChange = async (newGenres: number[]) => {
   selectedGenres.value = newGenres;
   currentPage.value = 1;
   isLoadingMovies.value = true;
+  start();
 
-  const res = await getMovies(
-    currentCategory.value,
-    selectedGenres.value,
-    selectedProviders.value,
-    currentPage.value
-  );
-
-  movies.value = res?.results ?? [];
-  isLoadingMovies.value = false;
+  try {
+    const res = await getMovies(
+      currentCategory.value,
+      selectedGenres.value,
+      selectedProviders.value,
+      currentPage.value
+    );
+    movies.value = res?.results ?? [];
+  } finally {
+    isLoadingMovies.value = false;
+    stop();
+  }
 };
 
 const openFillterDrop = ref(true);
@@ -272,28 +300,15 @@ const openStreamimgDrop = ref(false);
 
 const showPopup = ref(false);
 const selectedId = ref(null);
+
 function openPopup(id) {
   selectedId.value = id;
   showPopup.value = true;
 }
 
-const isPageLoading = computed(() => {
-  return isLoadingMovies.value || isLoadingMore.value;
-});
-
-watch(
-  isPageLoading,
-  (loading) => {
-    document.body.style.cursor = loading ? "wait" : "default";
-  },
-  { immediate: true }
-);
-
-
 watch(showPopup, (val) => {
   document.body.style.overflow = val ? "hidden" : "";
 });
-
 
 const handleEsc = (e) => {
   if (e.key === "Escape") showPopup.value = false;
@@ -311,7 +326,7 @@ onUnmounted(() => {
 async function loadMore() {
   if (currentPage.value >= totalPages.value || isLoadingMore.value) return;
 
-  isLoadingMore.value = true;
+  start();
 
   try {
     const nextPage = currentPage.value + 1;
@@ -333,7 +348,7 @@ async function loadMore() {
       }
     }
   } finally {
-    isLoadingMore.value = false; 
+    stop();
   }
 }
 const selectedProviders = ref<number[]>([]);
@@ -363,6 +378,11 @@ const sortMap = {
 
 function updateMovies(sorted: Movie[] | Ref<Movie[]>) {
   movies.value = Array.isArray(unref(sorted)) ? unref(sorted) : [];
+}
+
+function handleSearchMovie(movie) {
+  selectedId.value = movie.id
+  showPopup.value = true
 }
 </script>
 

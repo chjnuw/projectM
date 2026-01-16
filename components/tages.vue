@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap justify-center">
     <div class="w-full text-start rounded-md">
-      <p class="font-bold text-xl mb-2 w-full text-start text-white">Genres</p>
+      <p class="font-bold text-xl mb-2 w-full text-start text-white">แท็กหนัง</p>
       <!-- <button
         v-for="genre in genres"
         :key="genre.id"

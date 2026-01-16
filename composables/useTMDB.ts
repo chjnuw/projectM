@@ -87,6 +87,7 @@ export const useTMDB = () => {
     request<TMDBResponse<Movie>>(
       `/search/movie?query=${encodeURIComponent(query)}`
     );
+
   const getGenres = () =>
     requestWithLang<{ genres: Genre[] }>("/genre/movie/list", "en-US");
 
@@ -254,8 +255,35 @@ export const useTMDB = () => {
     return extractAgeRating(data);
   };
 
+  const getPopularActorsEN = (page = 1) =>
+    requestWithLang<TMDBResponse<any>>(`/person/popular?page=${page}`, "en-US");
 
-  
+  const getPersonDetailsTH = (id: number) =>
+    requestWithLang<any>(`/person/${id}`, "th-TH");
+
+  const getPersonDetailsEN = (id: number) =>
+    requestWithLang<any>(`/person/${id}`, "en-US");
+
+  const getPersonDetails = async (id: number) => {
+    const en = await getPersonDetailsEN(id);
+    const th = await getPersonDetailsTH(id);
+
+    if (!en && !th) return null;
+
+    return {
+      id: en?.id ?? th?.id,
+      name: en?.name ?? th?.name, // ✅ EN เสมอ
+      profile_path: en?.profile_path ?? th?.profile_path,
+
+      // ✅ รายละเอียดใช้ TH ก่อน
+      biography: th?.biography || en?.biography || "",
+      place_of_birth: th?.place_of_birth || en?.place_of_birth || "",
+      birthday: th?.birthday || en?.birthday,
+      known_for_department:
+        th?.known_for_department || en?.known_for_department,
+    };
+  };
+
   return {
     getPopularMovies,
     getTopRatedMovies,
@@ -280,5 +308,7 @@ export const useTMDB = () => {
     getMovieReleaseDates,
     extractAgeRating,
     getMovieAgeRating,
+    getPopularActorsEN,
+    getPersonDetails,
   };
 };

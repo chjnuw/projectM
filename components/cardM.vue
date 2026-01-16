@@ -20,7 +20,10 @@
       class="text-md absolute top-1 right-1 z-10 drop-shadow-xl/50 p-1 opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"
       @click.stop
     >
-      <FontAwesomeIcon icon="fa-solid fa-heart" class="hover:text-pink-500"
+      <FontAwesomeIcon
+        icon="fa-solid fa-heart"
+        class="hover:text-pink-500"
+        @click="Favorite"
     /></span>
   </div>
 
@@ -30,15 +33,17 @@
       class="fixed z-50 w-56 bg-black/90 text-white rounded-lg shadow-xl p-3 pointer-events-none"
       :style="popupStyle"
     >
-      <p class="font-bold text-sm line-clamp-2">
-        {{ movie.title }}
+      <p class="font-bold text-md line-clamp-2">
+        {{ displayTitle.main }}
+      </p>
+
+      <p v-if="displayTitle.sub" class="text-sm text-gray-400">
+        {{ displayTitle.sub }}
       </p>
 
       <div class="flex gap-2 text-xs mt-1 opacity-80">
         <p>⭐ {{ movie.vote_average.toFixed(1) }}</p>
-        <p class="text-xs text-gray-400">
-          ({{ movie.vote_count ?? 0 }} รีวิว)
-        </p>
+        <p class="text-xs text-gray-400">({{ movie.vote_count ?? 0 }} รีวิว)</p>
         <span v-if="movie.release_date">
           {{ movie.release_date.slice(0, 4) }}
         </span>
@@ -107,6 +112,21 @@ const fallback = "img/no-poster.png";
 function onError(event) {
   event.target.src = fallback;
 }
+const Favorite = () => {
+  alert("Added to Favorite!");
+};
+
+
+const displayTitle = computed(() => {
+  const th = props.movie.title_th || props.movie.title;
+  const en = props.movie.title_en || props.movie.original_title;
+
+  if (!th || th === en) {
+    return { main: en, sub: null };
+  }
+
+  return { main: en, sub: th };
+});
 
 </script>
 

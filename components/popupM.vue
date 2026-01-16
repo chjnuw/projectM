@@ -27,11 +27,17 @@
               loading="lazy"
               class="rounded-xl aspect-[2/3] w-64 border-2 object-cover"
             />
-
-            <h1 class="p-2 w-full text-3xl font-bold text-center mt-2">
-              {{ selectedItem.title }}
-            </h1>
-
+            <div class="text-center mt-4 mb-2">
+              <p class="w-full text-2xl font-bold text-center">
+                {{ selectedItem.titleEN }}
+              </p>
+              <p
+                v-if="selectedItem.titleEN !== selectedItem.title"
+                class="text-sm text-gray-400 mt-2"
+              >
+                {{ selectedItem.title }}
+              </p>
+            </div>
             <div class="p-2 items-center justify-center mb-3">
               <div class="flex items-center justify-center gap-2 text-sm">
                 <p
@@ -161,7 +167,7 @@
                 class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none"
               ></div>
               <button
-                class="fixed top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full cursor-pointer"
+                class="fixed top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full cursor-pointer text-white/70 hover:text-white transition duration-200"
                 @click="$emit('close')"
               >
                 <FontAwesomeIcon icon="fa-solid fa-xmark" />
@@ -250,11 +256,27 @@
             </div>
 
             <div class="w-[95%] mb-6">
-              <div class="flex gap-2 text-xl mb-6 opacity-80">
-                <p>⭐ {{ selectedItem.vote_average.toFixed(1) ?? "N/A" }}</p>
-                <p class="text-gray-400">
-                  ({{ selectedItem.vote_count ?? 0 }} รีวิว)
-                </p>
+              <div class="flex mb-6 justify-between">
+                <div class="flex gap-2 opacity-80 justify-center items-center">
+                  <p class="text-2xl">
+                    ⭐ {{ selectedItem.vote_average.toFixed(1) ?? "N/A" }}
+                  </p>
+                  <p class="text-gray-400 text-sm">
+                    ({{ selectedItem.vote_count ?? 0 }} รีวิว)
+                  </p>
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-heart"
+                    class="hover:text-pink-500 text-2xl cursor-pointer p-2"
+                    @click="Favorite"
+                  />
+                </div>
+                <div class="flex gap-4 items-center">
+                  <a
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-full text-white transition"
+                  >
+                    รับชมได้ที่
+                  </a>
+                </div>
               </div>
               <p class="my-2 text-2xl font-bold">เรื่องย่อ</p>
               <p class="p-2 indent-8">
@@ -273,6 +295,7 @@
                   :name="a.name"
                   :character="a.character"
                   loading="lazy"
+                  class="border"
                 />
                 <div
                   class="flex justify-center items-center ml-4 w-32 flex-shrink-0"
@@ -304,6 +327,7 @@
                   :name="c.name"
                   :job="c.job"
                   loading="lazy"
+                  class="border"
                 />
 
                 <div
@@ -377,6 +401,7 @@ import {
 } from "vue";
 import { useTMDB } from "../composables/useTMDB";
 import type { Movie, CreditsResponse, MovieImagesResponse } from "../Type/tmdb";
+import { useGlobalLoading } from "../composables/useGlobalLoading";
 
 const {
   getMovieDetails,
@@ -420,7 +445,8 @@ const recommendedMovies = ref<Movie[]>([]);
 const currentMovieId = ref<number | null>(null);
 const isChanging = ref(false);
 const popupScroll = ref<HTMLElement | null>(null);
-const isLoading = ref(false);
+const { start, stop } = useGlobalLoading();
+
 // computed
 const filteredImages = computed(() => {
   return showAllImages.value ? images.value : images.value.slice(0, 10);
@@ -440,9 +466,7 @@ function formatRuntime(mins: number) {
 }
 async function loadData(id: number) {
   if (currentMovieId.value === id) return;
-
-  isChanging.value = true;
-  isLoading.value = true;
+  start();
 
   // รอ fade-out นิดนึง
   await new Promise((r) => setTimeout(r, 200));
@@ -469,6 +493,7 @@ async function loadData(id: number) {
     time: formatRuntime(movieTH.runtime),
     release: movieTH.release_date,
     title: movieTH.title,
+    titleEN: movieEN.title,
     description: movieTH.overview || "No overview available.",
     tags: movieEN?.genres || [],
     originalTitle: movieTH.original_title,
@@ -531,8 +556,8 @@ async function loadData(id: number) {
   });
 
   currentMovieId.value = id;
-  isLoading.value = false;
   isChanging.value = false;
+  stop();
 }
 const hasTrailer = computed(() => {
   return !!trailer.value;

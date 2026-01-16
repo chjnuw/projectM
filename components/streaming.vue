@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="font-bold text-xl mb-2 text-white">
-      Streaming Platforms
+      บริการสตรีมมิ่ง
     </p>
 
     <div class="flex gap-2 flex-wrap p-2">
