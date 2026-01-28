@@ -8,7 +8,7 @@
       placeholder="ค้นหาภาพยนตร์..."
       class="relative w-full pl-5 pr-12 py-4 rounded-xl bg-[#111] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A0E13E]"
       @focus="open = true"
-      @blur="setTimeout(() => (open = false), 150)"
+      @blur="onBlur"
     />
     <button
       class="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 text-xl cursor-pointer z-50 hover:text-white transition duration-200"
