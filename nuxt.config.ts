@@ -14,5 +14,11 @@ export default defineNuxtConfig({
       apiBase: "http://127.0.0.1:8000",
     },
   },
+   typescript: {
+    strict: true
+  },
+  experimental: {
+    typedPages: false
+  }
   ssr: false
 });
