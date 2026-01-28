@@ -13,4 +13,10 @@ export default defineNuxtConfig({
       TMDB_API_KEY: process.env.TMDB_API_KEY,
     },
   },
+   typescript: {
+    strict: true
+  },
+  experimental: {
+    typedPages: false
+  }
 });
