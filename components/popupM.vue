@@ -324,8 +324,9 @@ const recommendedMovies = ref<Movie[]>([]);
 const currentMovieId = ref<number | null>(null);
 const isChanging = ref(false);
 const popupScroll = ref<HTMLElement | null>(null);
-const { start, stop } = useGlobalLoading();
 const isFavorite = ref(false)
+const { start, stop, isLoading } = useGlobalLoading()
+
 
 const handleToggleFavorite = async () => {
   if (!selectedItem.value) return
