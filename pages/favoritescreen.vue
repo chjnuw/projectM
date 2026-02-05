@@ -1,36 +1,25 @@
 <template>
   <!-- ⏳ กำลังเช็ค login -->
-  <div
-    v-if="pending"
-    class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center"
-  >
+  <div v-if="pending" class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center">
     <h1 class="text-white">Loading...</h1>
   </div>
 
   <!-- ❌ ยังไม่ล็อกอิน -->
-  <div
-    v-else-if="!isLoggedIn"
-    class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center"
-  >
+  <div v-else-if="!isLoggedIn" class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center">
     <div class="flex flex-col items-center gap-6 text-center">
       <h1 class="text-white text-2xl">
         คุณยังไม่ได้ล็อกอินบัญชีผู้ใช้
       </h1>
 
-      <button
-        @click="goToLogin"
-        class="px-8 py-3 bg-[#90CB38] text-white text-shadow-4xl rounded-xl font-medium cursor-pointer hover:bg-[#6da11f]"
-      >
+      <button @click="goToLogin"
+        class="px-8 py-3 bg-[#90CB38] text-white text-shadow-4xl rounded-xl font-medium cursor-pointer hover:bg-[#6da11f]">
         เข้าสู่ระบบ
       </button>
     </div>
   </div>
 
   <!-- ✅ ล็อกอินแล้ว -->
-  <div
-    v-else
-    class="mt-22 mx-[10%] bg-[#0B0A0A]"
-  >
+  <div v-else class="mt-22 mx-[10%] bg-[#0B0A0A]">
     <!-- header -->
     <div class="relative w-full flex items-center px-10 pt-6">
       <div class="w-[100px]"></div>
@@ -46,53 +35,48 @@
         จุ่มหนังจากรายการโปรด
       </button>
 
-      <PopupFav
-        v-if="showFavPopup"
-        @close="showFavPopup = false"
-        @result="openResult"
-      />
+      <!-- Popup เลือกสุ่ม -->
+      <PopupFav v-if="showFavPopup" :key="favPopupKey" @close="showFavPopup = false" @result="openResult" />
 
-      <PopupResultFav
-        v-if="resultMovie"
-        :movie="resultMovie"
-        @close="resultMovie = null"
-        @view="openMovieDetail"
-        @retry="retrySpin"
-      />
+      <!-- Popup ผลลัพธ์ -->
+      <PopupResultFav v-if="resultMovie" :movie="resultMovie" @retry="retrySpin" @view="openMovieDetail" />
+
+
     </div>
 
     <!-- list -->
-    <div class="bg-[#0B0A0A] text-white w-full flex rounded-xl h-full p-8 pt-4">
-      <transition name="fade" mode="out-in">
-        <SkeletonCatagorySkeletonMovieList
-          v-if="isLoadingMovies"
-          :count="20"
-        />
+<div class="bg-[#0B0A0A] text-white w-full rounded-xl h-full p-8 pt-4">
+  <transition name="fade" mode="out-in">
+    <!-- ⏳ loading -->
+    <div
+      v-if="isLoadingMovies"
+      class="grid gap-3.5 px-4 pt-3
+             grid-cols-2
+             sm:grid-cols-3
+             md:grid-cols-4
+             lg:grid-cols-5
+             xl:grid-cols-6"
+    >
+      <SkeletonCatagorySkeletonMovieList :count="20" />
+    </div>
 
-        <div
-          v-else
-          class="grid gap-3.5 px-4 pt-3
-          grid-cols-2
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-          xl:grid-cols-6"
-        >
-          <CardM
-            v-for="movie in movies"
-            :key="movie.id"
-            :movie="movie"
-            @removed="movies = movies.filter(m => m.id !== $event)"
-            @open="openPopup"
-          />
+    <!-- ✅ loaded -->
+
+
+
+        <div v-else class="grid gap-3.5 px-4 pt-3
+         grid-cols-2
+         sm:grid-cols-3
+         md:grid-cols-4
+         lg:grid-cols-5
+         xl:grid-cols-6">
+          <CardM v-for="movie in movies" :key="movie.id" :movie="movie"
+            @removed="movies = movies.filter(m => m.id !== $event)" @open="openPopup" />
         </div>
+
       </transition>
 
-      <PopupM
-        v-if="showPopup"
-        :selectedId="selectedId"
-        @close="showPopup = false"
-      />
+      <PopupM v-if="showPopup" :selectedId="selectedId" @close="showPopup = false" />
     </div>
 
     <!-- แนะนำสำหรับคุณ -->
@@ -107,15 +91,8 @@
         <div class="flex-1 border-b-2"></div>
       </div>
 
-      <div
-        v-if="userTags.length"
-        class="flex gap-2 flex-wrap text-sm"
-      >
-        <span
-          v-for="tag in userTags"
-          :key="tag.id"
-          class="px-3 py-1 rounded-full bg-green-600/20 text-green-400"
-        >
+      <div v-if="userTags.length" class="flex gap-2 flex-wrap text-sm">
+        <span v-for="tag in userTags" :key="tag.id" class="px-3 py-1 rounded-full bg-green-600/20 text-green-400">
           # {{ tag.name }}
         </span>
       </div>
@@ -132,19 +109,16 @@ import type { Movie } from "../Type/tmdb"
 import { useTMDB } from "../composables/useTMDB"
 
 
+/* ---------------- router ---------------- */
 const router = useRouter()
 
-/* ---------------- login check (เหมือน profile) ---------------- */
-const { data, pending, error } = await useFetch("/api/profile", {
+/* ---------------- login check ---------------- */
+const { pending, error } = await useFetch("/api/profile", {
   credentials: "include",
   throw: false
 })
 
-const isLoggedIn = computed(() => {
-  if (pending.value) return false
-  if (error.value) return false
-  return true
-})
+const isLoggedIn = computed(() => !pending.value && !error.value)
 
 const goToLogin = () => {
   router.push("/logInscreen")
@@ -154,23 +128,27 @@ const goToLogin = () => {
 const showFavPopup = ref(false)
 const resultMovie = ref<Movie | null>(null)
 
+/** 🔁 กดสุ่มใหม่ */
 const retrySpin = () => {
   resultMovie.value = null
   showFavPopup.value = true
 }
 
+/** 👁️ ดูรายละเอียด */
+const openMovieDetail = (id: number) => {
+  resultMovie.value = null
+  openPopup(id)
+}
+
+/** เปิด popup สุ่ม */
 const openFavPopup = () => {
   showFavPopup.value = true
 }
 
+/** รับผลลัพธ์จาก PopupFav */
 const openResult = (movie: Movie) => {
   resultMovie.value = movie
   showFavPopup.value = false
-}
-
-const openMovieDetail = (id: number) => {
-  resultMovie.value = null
-  openPopup(id)
 }
 
 /* ---------------- movies ---------------- */

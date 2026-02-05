@@ -103,27 +103,6 @@
         <div class="flex justify-between items-center w-[500px]">
           <label class="flex items-center gap-2 cursor-pointer select-none">
             <input type="checkbox" v-model="checked" class="peer hidden" />
-
-            <!-- กล่อง checkbox -->
-            <div
-              class="w-5 h-5 rounded-sm border-2 border-gray-400 flex items-center justify-center transition-all peer-checked:border-white peer-checked:bg-white"
-            >
-              <!-- ไอคอนถูก -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                class="opacity-0 peer-checked:opacity-100 text-black transition-all"
-              >
-                <path
-                  fill="currentColor"
-                  d="m10.6 13.4l-2.15-2.15q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7L9.9 15.5q.3.3.7.3t.7-.3l5.65-5.65q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275zM5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21z"
-                />
-              </svg>
-            </div>
-
-            <span class="text-white">จดจำฉัน</span>
           </label>
 
           <span

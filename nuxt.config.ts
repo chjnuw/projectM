@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     strict: true,
   },
   experimental: {
-    typedPages: false,
+    typedPages: false
   },
+  ssr: false
 });

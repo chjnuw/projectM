@@ -15,7 +15,7 @@
                             d="M256 42.667A213.333 213.333 0 0 1 469.334 256c0 117.821-95.513 213.334-213.334 213.334c-117.82 0-213.333-95.513-213.333-213.334C42.667 138.18 138.18 42.667 256 42.667m21.334 234.667h-42.667c-52.815 0-98.158 31.987-117.715 77.648c30.944 43.391 81.692 71.685 139.048 71.685s108.104-28.294 139.049-71.688c-19.557-45.658-64.9-77.645-117.715-77.645M256 106.667c-35.346 0-64 28.654-64 64s28.654 64 64 64s64-28.654 64-64s-28.653-64-64-64" />
                     </svg>
                     <input type="text" placeholder="ชื่อผู้ใช้" v-model="form.name"
-                        class="flex-1 p-3 bg-transparent focus:outline-none text-[#ffffff] font-extrabold text-shadow-2xl" />
+                        class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl" />
 
                 </div>
                 <div
@@ -26,7 +26,7 @@
                             d="m7.172 11.334l2.83 1.935l2.728-1.882l6.115 6.033q-.242.079-.512.08H1.667c-.22 0-.43-.043-.623-.12zM20 6.376v9.457c0 .247-.054.481-.15.692l-5.994-5.914zM0 6.429l6.042 4.132l-5.936 5.858A1.7 1.7 0 0 1 0 15.833zM18.333 2.5c.92 0 1.667.746 1.667 1.667v.586L9.998 11.648L0 4.81v-.643C0 3.247.746 2.5 1.667 2.5z" />
                     </svg>
                     <input type="text" placeholder="อีเมล" v-model="form.email"
-                        class="flex-1 p-3 bg-transparent focus:outline-none text-[#ffffff] font-extrabold text-shadow-2xl" />
+                        class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl" />
                 </div>
 
                 <div @click=gendercheck class="flex  text-white w-[500px] h-auto gap-[100px] ml-6">
@@ -59,7 +59,7 @@
                     </svg>
 
                     <input type="date" v-model="form.birthdate" class="flex-1 p-3 bg-transparent focus:outline-none
-           text-[#ffffff] font-extrabold text-shadow-2xl" />
+           text-black font-extrabold text-shadow-2xl" />
                 </div>
                 <!-- อายุ  -->
 <div
@@ -79,7 +79,7 @@
     disabled
     placeholder="อายุ"
     class="flex-1 p-3 bg-transparent focus:outline-none
-           text-[#ffffff] font-extrabold text-shadow-2xl cursor-not-allowed"
+           text-black font-extrabold text-shadow-2xl cursor-not-allowed"
   />
 </div>
 
@@ -99,7 +99,7 @@
                         </svg>
 
                         <input :type="showPassword ? 'text' : 'password'" placeholder="รหัสผ่าน" v-model="form.password"
-                            class="bg-transparent focus:outline-none text-white font-bold" />
+                            class="bg-transparent focus:outline-none text-black font-bold" />
 
                     </div>
 
