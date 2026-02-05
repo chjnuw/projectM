@@ -24,7 +24,8 @@
     <div class="relative w-full flex items-center px-10 pt-6">
       <div class="w-[100px]"></div>
 
-      <h1 class="text-3xl font-medium flex-1 text-center">
+      <!-- title -->
+      <h1 class="text-2xl md:text-3xl font-medium text-center">
         รายการโปรด
       </h1>
 
@@ -79,16 +80,35 @@
       <PopupM v-if="showPopup" :selectedId="selectedId" @close="showPopup = false" />
     </div>
 
-    <!-- แนะนำสำหรับคุณ -->
-    <div class="snap-start mb-10 p-7">
-      <div class="p-4 flex items-center gap-3">
-        <h2 class="font-bold text-2xl whitespace-nowrap">
+    <!-- popup movie -->
+    <PopupM
+      v-if="showPopup && selectedId !== null"
+      :selectedId="selectedId"
+      @close="showPopup = false"
+    />
+
+    <!-- popup fav -->
+    <PopupFav
+      v-if="showFavPopup"
+      @close="showFavPopup = false"
+      @result="openResult"
+    />
+
+    <PopupResultFav
+      v-if="resultMovie"
+      :movie="resultMovie"
+      @close="resultMovie = null"
+      @view="openMovieDetail"
+      @retry="retrySpin"
+    />
+
+    <!-- recommend -->
+    <div class="mt-10 mb-10 px-2">
+      <div class="flex items-center gap-3 mb-3">
+        <h2 class="font-bold text-xl md:text-2xl">
           แนะนำสำหรับคุณ
         </h2>
-        <p class="text-gray-500 text-sm">
-          จากแนวหนังที่คุณชื่นชอบ
-        </p>
-        <div class="flex-1 border-b-2"></div>
+        <div class="flex-1 border-b border-gray-700"></div>
       </div>
 
       <div v-if="userTags.length" class="flex gap-2 flex-wrap text-sm">
@@ -103,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onUnmounted } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRouter } from "vue-router"
 import type { Movie } from "../Type/tmdb"
 import { useTMDB } from "../composables/useTMDB"
@@ -124,9 +144,9 @@ const goToLogin = () => {
   router.push("/logInscreen")
 }
 
-/* ---------------- popup fav ---------------- */
-const showFavPopup = ref(false)
-const resultMovie = ref<Movie | null>(null)
+/* movies */
+const movies = ref<Movie[]>([])
+const isLoadingMovies = ref(true)
 
 /** 🔁 กดสุ่มใหม่ */
 const retrySpin = () => {
@@ -165,10 +185,10 @@ function openPopup(id: number) {
   showPopup.value = true
 }
 
-/* ---------------- user tags ---------------- */
+/* user tags */
 const userTags = ref<{ id: number; name: string }[]>([])
 
-/* ---------------- TMDB ---------------- */
+/* TMDB */
 const { getMovieDetails } = useTMDB()
 
 const loadFavorites = async () => {
@@ -179,10 +199,8 @@ const loadFavorites = async () => {
       { credentials: "include" }
     )
 
-    favoriteIds.value = favs.map(f => f.movie_id)
-
     const results = await Promise.all(
-      favoriteIds.value.map(id => getMovieDetails(id))
+      favs.map(f => getMovieDetails(f.movie_id))
     )
 
     movies.value = results.filter(Boolean) as Movie[]
@@ -193,11 +211,7 @@ const loadFavorites = async () => {
   }
 }
 
-/* ---------------- esc ---------------- */
-watch(showPopup, (val) => {
-  document.body.style.overflow = val ? "hidden" : ""
-})
-
+/* esc */
 const handleEsc = (e: KeyboardEvent) => {
   if (e.key === "Escape") showPopup.value = false
 }
@@ -218,6 +232,16 @@ onMounted(async () => {
 
 onUnmounted(() => {
   document.removeEventListener("keydown", handleEsc)
-  document.body.style.overflow = ""
 })
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

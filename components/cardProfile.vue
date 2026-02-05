@@ -6,7 +6,12 @@
     <div class="relative">
       <img
         :src="previewImage || userData.image || '/img/avatar.png'"
-        class="w-[150px] h-[150px] rounded-full object-cover border-2 border-white"
+        class="
+          w-[120px] h-[120px]
+          md:w-[150px] md:h-[150px]
+          rounded-full object-cover
+          border-2 border-white
+        "
       />
 
       <!-- ปุ่มเปลี่ยนรูป -->
@@ -28,7 +33,7 @@
     </div>
 
     <!-- Username -->
-    <div class="flex flex-col w-[363px] gap-1">
+    <div class="flex flex-col w-full max-w-[363px] gap-1">
       <label class="text-white text-sm font-bold">ชื่อผู้ใช้</label>
       <input
         v-model="userData.username"
@@ -38,7 +43,7 @@
     </div>
 
     <!-- Email -->
-    <div class="flex flex-col w-[363px] gap-1">
+    <div class="flex flex-col w-full max-w-[363px] gap-1">
       <label class="text-white text-sm font-bold">อีเมล</label>
       <input
         v-model="userData.email"
@@ -52,7 +57,10 @@
       <p class="text-white text-sm font-bold text-center">รสนิยมภาพยนตร์</p>
 
       <!-- 🔹 โหมดดู -->
-      <div v-if="!isEditing" class="flex gap-3 justify-center">
+      <div
+        v-if="!isEditing"
+        class="flex flex-wrap gap-3 justify-center px-4"
+      >
         <div
           v-for="tag in userTags.slice(0, 3)"
           :key="tag.id"
@@ -101,12 +109,13 @@
       class="text-sm text-white/70 underline cursor-pointer hover:text-red-400"
       @click="showDeletePopup = true"
     >
-      Delete account
+      ลบบัญชี
     </p>
 
     <DeletePopup v-if="showDeletePopup" @close="showDeletePopup = false" />
   </div>
 </template>
+
 
 <script setup>
 import { ref, watchEffect } from "vue";

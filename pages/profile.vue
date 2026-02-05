@@ -4,7 +4,7 @@
     v-if="pending"
     class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center"
   >
-    <h1 class="text-white">Loading...</h1>
+    <h1 class="text-white">กำลังโหลด...</h1>
   </div>
 
   <!--  ไม่ได้ล็อกอิน -->
@@ -52,11 +52,17 @@
         <h1 class="text-[#eb1313] text-lg">Log out</h1>
       </div>
     </div>
+  </div>
 
+  <!-- CONTENT -->
+  <div class="flex-1 w-full">
     <CardProfile v-if="activeTab === 'profile'" />
     <CardProfilepassword v-if="activeTab === 'password'" />
-    <logout v-if="showLogout" @close="showLogout = false" />
   </div>
+
+  <logout v-if="showLogout" @close="showLogout = false" />
+</div>
+
 </template>
 
 <script setup>
