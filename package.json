@@ -6,8 +6,7 @@
     "build": "nuxt build",
     "dev": "concurrently \"cd image-search && python -m uvicorn main:app --reload --port 8000\" \"nuxt dev -p 3000\"",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": ""
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
