@@ -75,13 +75,13 @@
       <div v-if="isLoggedIn && userGender === 3" class="snap-start mb-10">
         <div class="p-4 flex items-center gap-3">
           <h2 class="font-bold text-2xl whitespace-nowrap">
-            แนวภาพยนตร์ที่ผู้หญิงชื่นชอบ ⚥
+            แนวภาพยนตร์ที่เพศอื่นๆ ชื่นชอบ ⚥
           </h2>
           <div class="hidden md:block flex-1 border-b-2"></div>
         </div>
         <GenderRecommend
           title="แนะนำยอดนิยม"
-          endpoint="/api/recommend/popular"
+          endpoint="/api/recommend/female"
           @open="openPopup"
         />
       </div>
