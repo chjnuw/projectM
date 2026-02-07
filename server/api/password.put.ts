@@ -1,5 +1,5 @@
 import { getCookie } from 'h3'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { db } from '../db'
 
 export default defineEventHandler(async (event) => {

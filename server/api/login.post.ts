@@ -1,6 +1,7 @@
 import { db } from '../db'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { defineEventHandler, readBody, createError, setCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
