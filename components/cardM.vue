@@ -1,6 +1,6 @@
 <template>
   <div
-    class="hover:scale-105 relative transition-transform duration-300 cursor-pointer overflow-hidden group hidden md:block"
+    class="hover:-translate-y-1.5 relative transition-transform duration-300 cursor-pointer overflow-hidden group hidden md:block"
     v-bind="$attrs"
     @mouseenter="onEnter"
     @mouseleave="onLeave"
@@ -16,7 +16,7 @@
 
     <!-- ปุ่ม favorite -->
     <span
-      class="text-md absolute top-1 right-1 z-10 drop-shadow-xl/50 p-1 opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"
+      class="text-md absolute top-1 right-1 z-10 drop-shadow-xl/80 p-1 opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"
     >
       <FontAwesomeIcon
         icon="fa-solid fa-heart"

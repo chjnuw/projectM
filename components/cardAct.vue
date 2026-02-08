@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-shrink-0 bg-white transition duration-300 hover:scale-110 cursor-pointer rounded-2xl"
+    class="flex-shrink-0 bg-white transition duration-300 hover:-translate-y-1.5 cursor-pointer rounded-2xl"
   >
     <div class="w-full aspect-[2/3] overflow-hidden rounded-2xl ">
       <img :src="img" loading="lazy" :alt="name" class="w-full h-full object-contain" />

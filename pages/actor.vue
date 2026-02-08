@@ -33,7 +33,7 @@
           <div
             @click="emit('click')"
             v-if="loading || (actors.length && !loading)"
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-4 pt-6 w-full max-w-[1400px] mx-auto"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 px-4 pt-6 w-full max-w-[1400px] mx-auto"
           >
             <template v-if="loading">
               <SkeletonActSkeletonActorCard v-for="n in 10" :key="'skeleton-' + n" />

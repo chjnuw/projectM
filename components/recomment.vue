@@ -1,25 +1,34 @@
 <template>
   <div class="px-2 sm:px-4 mx-auto">
-    <div class="gap-2 py-4 px-2 flex overflow-x-auto custom-scrollbar">
+    <div
+      class="gap-2 py-4 px-2 flex overflow-x-auto overflow-y-hidden custom-scrollbar"
+    >
       <div
         v-for="(movie, index) in movies"
         :key="movie.id"
-        class="relative transition-transform duration-300 cursor-pointer"
+        class="relative group cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
         @click="$emit('open', movie.id)"
       >
-        <!-- Bar -->
+        <!-- Ribbon -->
         <div
-          class="absolute -left-1 -bottom-2 text-[72px] leading-none font-extrabold text-white/10 select-none pointer-events-none"
+          class="absolute left-0 top-3 z-50 px-3 py-1 text-xs font-bold text-white rounded-r-lg shadow-md transition-all duration-300 group-hover:brightness-110"
+          :class="{
+            'bg-gradient-to-r from-yellow-400 to-orange-500': index === 0,
+            'bg-gradient-to-r from-gray-300 to-gray-500': index === 1,
+            'bg-gradient-to-r from-amber-500 to-orange-700': index === 2,
+            'bg-black/70': index > 2,
+          }"
         >
-          {{ index + 1 }}
+          TOP {{ index + 1 }}
         </div>
 
         <CardM
           :movie="movie"
           :class="[
-            'relative z-10 aspect-[2/3] rounded-xl overflow-hidden flex-shrink-0',
+            'relative z-20 aspect-[2/3] rounded-xl overflow-hidden flex-shrink-0',
             'transition-all duration-300',
-            'shadow-md hover:shadow-2xl hover:-translate-y-1',
+            'shadow-md hover:shadow-2xl ',
+            index < 3 && 'ring-2 ring-yellow-400/50',
             cardClass,
           ]"
         />

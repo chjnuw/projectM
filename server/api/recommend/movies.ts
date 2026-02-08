@@ -81,6 +81,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // 🧹 unique ภายในกลุ่ม
     const uniqueMain = Array.from(
       new Map(mainMovies.map((m) => [m.id, m])).values(),
     );
@@ -89,16 +90,18 @@ export default defineEventHandler(async (event) => {
       new Map(otherMovies.map((m) => [m.id, m])).values(),
     );
 
-    // เรียงในกลุ่ม
+    // 🔥 ตัดหนัง other ที่ซ้ำกับ main ออก
+    const mainIds = new Set(uniqueMain.map((m) => m.id));
+    const filteredOther = uniqueOther.filter((m) => !mainIds.has(m.id));
+
+    // 🔃 sort ตามความนิยม
     uniqueMain.sort((a, b) => b.popularity - a.popularity);
-    uniqueOther.sort((a, b) => b.popularity - a.popularity);
+    filteredOther.sort((a, b) => b.popularity - a.popularity);
 
-    // 🔐 ล็อก 1–5
-    const finalFeed = [
-      ...uniqueMain.slice(0, 5), // ⭐ main tag ครองบน
-      ...uniqueOther,
-    ];
+    // 🏆 ล็อก main tag ให้อยู่บน 1–5 เสมอ
+    const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
 
+    // 🔢 จำกัดจำนวน
     return finalFeed.slice(0, 20);
   } catch (err) {
     console.error("❌ recommend movies error:", err);
