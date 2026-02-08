@@ -1,17 +1,12 @@
+numpy<2
+torch==2.1.2
+torchvision==0.16.2
+ftfy
+regex
+tqdm
+Pillow
+faiss-cpu
 fastapi
 uvicorn
-numpy
-pillow
-requests
-python-dotenv
-
-# FAISS แบบ CPU
-faiss-cpu
-
-# Torch CPU เท่านั้น
-torch==2.1.0+cpu
-torchvision==0.16.0+cpu
---extra-index-url https://download.pytorch.org/whl/cpu
-
-# CLIP
+python-multipart
 git+https://github.com/openai/CLIP.git
