@@ -1,4 +1,5 @@
-import { db } from '../db'
+import { db } from '~/server/db'
+
 
 export default defineEventHandler(async () => {
   const [rows]: any = await db.query(

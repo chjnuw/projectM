@@ -1,4 +1,5 @@
-import { db } from '../db'
+import { db } from '~/server/db'
+
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { defineEventHandler, readBody, createError, setCookie } from 'h3'

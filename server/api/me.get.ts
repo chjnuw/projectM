@@ -1,5 +1,6 @@
 import { getCookie } from "h3";
-import { db } from "../db";
+import { db } from '~/server/db'
+
 
 export default defineEventHandler(async (event) => {
   const userId = getCookie(event, 'user_id')

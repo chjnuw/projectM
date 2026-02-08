@@ -1,4 +1,5 @@
-import { db } from '../db'
+import { db } from '~/server/db'
+
 import { writeFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import {

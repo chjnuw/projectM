@@ -1,4 +1,4 @@
-import { db } from '../db'
+import { db } from '~/server/db'
 import { getCookie, deleteCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
