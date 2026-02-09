@@ -113,7 +113,7 @@
   />
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
 import { $fetch } from "ofetch";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
@@ -164,6 +164,11 @@ const tastePieRef = ref<any>(null);
 const onFavoriteChanged = () => {
   tastePieRef.value?.refreshTaste();
 };
+
+import { useTasteProfile } from "../composables/useTasteProfile";
+const topGenreId = ref<number | null>(null);
+const topMood = ref<string | null>(null);
+
 </script>
 
 <style></style>

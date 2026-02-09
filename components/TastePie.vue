@@ -124,7 +124,7 @@ import { Chart } from "chart.js/auto";
 import { ref, onMounted, watchEffect, computed, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
-import "dayjs/locale/th"; 
+import "dayjs/locale/th";
 const router = useRouter();
 
 const selectedMonth = ref(dayjs().format("YYYY-MM"));
@@ -338,4 +338,6 @@ watch(data, () => {
   console.log("selectedMonth:", selectedMonth.value);
   console.log("data:", data.value);
 });
+
+
 </script>
