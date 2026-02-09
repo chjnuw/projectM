@@ -34,16 +34,25 @@ export default defineEventHandler(async (event) => {
 
     const genreWeights = rows.map((row: any, index: number) => {
       const hours =
-        (now - new Date(row.created_at).getTime()) / (1000 * 60 * 60);
+        (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60);
 
       let weight = 2;
 
+      // 🏆 แท็กที่อยู่นานที่สุด
       if (index === 0) {
-        weight = 6; 
-      } else if (hours > 48) {
-        weight = 3;
-      } else {
-        weight = 1.5; 
+        weight = 6;
+      }
+      // ⏳ แท็กเก่าพอสมควร
+      else if (hours > 72) {
+        weight = 4;
+      }
+      // 🆕 แท็กใหม่
+      else if (hours > 24) {
+        weight = 2.5;
+      }
+      // 🐣 แท็กล่าสุด
+      else {
+        weight = 1.5;
       }
 
       return {
@@ -102,7 +111,7 @@ export default defineEventHandler(async (event) => {
     const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
 
     // 🔢 จำกัดจำนวน
-    return finalFeed.slice(0, 10);
+    return finalFeed.slice(0, 20);
   } catch (err) {
     console.error("❌ recommend movies error:", err);
     return [];
