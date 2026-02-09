@@ -4,39 +4,58 @@
       <Breadcrumb />
     </div>
     <div
-      class="bg-[#0B0A0A] text-white h-full flex flex-wrap justify-center rounded-xl max-w-[80%] mx-auto mb-20 m-4"
+      class="bg-gradient-to-b from-[#0E0E0E] to-black text-white h-full flex flex-wrap justify-center rounded-xl max-w-[80%] mx-auto mb-20 m-4 border border-white/10 backdrop-blur-md"
     >
-      <h2 class="font-bold text-4xl text-center mt-8">นักแสดง</h2>
+      <h2
+        class="font-extrabold text-3xl md:text-4xl text-center mt-8 tracking-wide"
+      >
+        นักแสดงยอดนิยม
+      </h2>
 
-      <section class="w-full p-4 justify-center mb-10">
+      <section class="w-full p-4 justify-center mb-10 ">
         <div class="w-full flex justify-center mt-4">
-          <div class="relative w-full max-w-md">
+          <div class="relative w-full max-w-lg group">
             <input
               v-model="keyword"
               type="text"
-              placeholder="ค้นหานักแสดง..."
-              class="w-full px-4 py-2 pr-10 rounded-full bg-black border border-white/20 text-white placeholder-white/40 focus:outline-none focus:border-[#A0E13E]"
+              placeholder="ค้นหานักแสดง เช่น Tom Cruise, Emma Stone..."
+              class="w-full px-5 py-3 pr-12 rounded-full bg-black/70 backdrop-blur border border-white/20 text-white placeholder-white/40 focus:outline-none focus:border-[#A0E13E] transition"
             />
-
+            <Transition name="fade-scale">
+              <!-- icon search -->
+              <span
+                v-if="!keyword"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40"
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-magnifying-glass"
+                  class="cursor-pointer"
+                />
+              </span>
+         
             <!-- ปุ่มล้าง -->
-            <button
-              v-if="keyword"
-              @click="clearSearch"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
-            >
-              ✕
-            </button>
+              <button
+                v-else
+                @click="clearSearch"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#A0E13E] transition"
+              >
+                ✕
+              </button>
+            </Transition>
           </div>
         </div>
 
         <div class="flex w-full justify-center">
           <div
             @click="emit('click')"
-            v-if="loading || (actors.length && !loading)"
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 px-4 pt-6 w-full max-w-[1400px] mx-auto"
+            v-if="loading || actors.length"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 px-2 sm:px-4 pt-6 w-full max-w-[1500px] mx-auto"
           >
             <template v-if="loading">
-              <SkeletonActSkeletonActorCard v-for="n in 10" :key="'skeleton-' + n" />
+              <SkeletonActSkeletonActorCard
+                v-for="n in 10"
+                :key="'skeleton-' + n"
+              />
             </template>
             <template v-else>
               <CardAct
@@ -52,7 +71,7 @@
                 :name="actor.name"
                 :gender="actor.gender"
                 :department="actor.department"
-                class="border cursor-pointer"
+                class="border border-white/10 rounded-xl hover:scale-[1.05] hover:border-[#A0E13E]/50 transition-all duration-300 cursor-pointer"
               />
             </template>
           </div>
@@ -63,12 +82,18 @@
             v-if="hasMore"
             @click="loadActors"
             :disabled="loading"
-            class="px-6 py-2 rounded-full bg-[#A0E13E] text-black font-bold hover:bg-[#90CB38] transition disabled:opacity-50 cursor-pointer"
+            class="px-8 py-3 rounded-full bg-gradient-to-r from-[#A0E13E] to-lime-400 text-black font-extrabold tracking-wide hover:scale-105 transition disabled:opacity-50 cursor-pointer"
           >
             <span v-if="!loading">โหลดเพิ่ม</span>
             <span v-else>กำลังโหลด...</span>
           </button>
         </div>
+        <p
+          v-if="!loading && actors.length === 0"
+          class="text-center text-white/40 mt-10"
+        >
+          ไม่พบนักแสดงที่ตรงกับการค้นหา
+        </p>
       </section>
     </div>
     <PopupA v-if="showPopup" :actor="selectedActor" @close="closePopup" />
@@ -191,4 +216,15 @@ const clearSearch = () => {
 onMounted(loadActors);
 </script>
 
-<style></style>
+<style>
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.18s ease;
+}
+
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.85);
+}
+</style>

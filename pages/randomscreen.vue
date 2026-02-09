@@ -38,12 +38,10 @@
 
     <!-- LEFT : GENRE PANEL -->
     <div
-      class="relative z-10 w-full lg:w-1/4  bg-gradient-to-b from-[#111] to-[#0b0b0b] rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#222] shadow-[0_0_30px_#000]"
+      class="relative z-10 w-full lg:w-1/4 bg-gradient-to-b from-[#111] to-[#0b0b0b] rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#222] shadow-[0_0_30px_#000]"
     >
-      <h2
-        class="text-lg sm:text-xl font-bold mb-4 text-[#90CB38] tracking-wide"
-      >
-        🎬 เลือกแท็กหนัง (สูงสุด 3)
+      <h2 class="text-lg font-bold mb-4 text-[#90CB38]">
+        🎬 เลือกแท็กหนัง ({{ selectedGenres.length }}/3)
       </h2>
 
       <div class="flex flex-wrap gap-2 sm:gap-3">
@@ -66,15 +64,16 @@
       <button
         @click="spin"
         :disabled="selectedGenres.length === 0 || isSpinning"
-        class="relative overflow-hidden w-full mt-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-extrabold text-black bg-[#90CB38] shadow-[0_0_25px_#90CB38] hover:scale-105 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+        class="relative overflow-hidden w-full mt-6 py-4 rounded-2xl font-extrabold text-black bg-[#90CB38] transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        🎰 สุ่มหนัง
+        <span v-if="!isSpinning">🎰 สุ่มหนัง</span>
+        <span v-else class="animate-pulse">🎲 กำลังสุ่ม...</span>
       </button>
     </div>
 
     <!-- RIGHT : SLOT -->
     <div
-      class="relative z-10 flex-1 flex items-center justify-center mt-4 lg:mt-0 "
+      class="relative z-10 flex-1 flex items-center justify-center mt-4 lg:mt-0"
     >
       <div
         class="relative w-full max-w-full sm:max-w-[520px] bg-gradient-to-b from-[#111] to-[#0b0b0b] rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 border border-[#222] shadow-[0_0_40px_#000]"
@@ -125,6 +124,7 @@
     <!-- RESULT POPUP -->
     <PopupResultFav
       v-if="showResult && resultMovie"
+      :key="resultMovie.id"
       :movie="resultMovie"
       @close="showResult = false"
       @retry="retrySpin"
@@ -292,9 +292,11 @@ const spin = async () => {
 };
 
 /* ---------------- ACTIONS ---------------- */
-const retrySpin = () => {
+const retrySpin = async() => {
   showResult.value = false;
   translateY.value = 0;
+  await nextTick();
+  spin();
 };
 
 const openMovieDetail = (id: number) => {

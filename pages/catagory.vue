@@ -1,21 +1,33 @@
 <template>
   <div class="bg-black mt-22 flex flex-col">
-    <div class="z-40 mx-[10%]">
-      <Breadcrumb />
-    </div>
-    <!-- <section
-      class="relative h-[80vh] w-full flex items-center justify-center overflow-hidden"
-    >
-      <img
-        src="/public/img/fri.png"
-        alt=""
-        class="object-cover object-top w-full h-full mask-b-from-30% mask-b-to-85% mask-x-from-60% mask-x-to-90%"
-      />
-      <div class="absolute w-[60%] aspect[3/2] bg-black top-40  z-50">1</div>
-    </section> รูปภาพข้างบน กำลังคิดรูปแบบ-->
+    <section class="relative h-[80vh] w-full overflow-hidden">
+      <!-- breadcrumb -->
+      <div
+        class="absolute z-30 top-6 left-1/6 -translate-x-1/2 bg-black/30 rounded"
+      >
+        <Breadcrumb />
+      </div>
+
+      <!-- HERO BACKDROP (crossfade) -->
+      <transition name="hero-fade" mode="out-in">
+        <img
+          v-if="randomHeroMovie"
+          :key="randomHeroMovie.id"
+          :src="`https://image.tmdb.org/t/p/original${randomHeroMovie.backdrop_path}`"
+          class="absolute inset-0 w-full h-full object-cover scale-105 object-top"
+        />
+      </transition>
+
+      <!-- overlay -->
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"
+      ></div>
+
+    </section>
+
     <section class="flex gap-4 p-4 mb-20 max-w-[80%] mx-auto">
       <div
-        class="bg-[#0B0A0A] text-white w-1/4 flex flex-wrap items-start justify-center rounded-xl h-full"
+        class="bg-[#0B0A0A] text-white w-1/4 rounded-xl h-full sticky top-24 self-start border border-white/10 backdrop-blur-md"
       >
         <SkeletonCatagorySkeletonSidebarFilter v-if="isLoadingGenres" />
         <div v-else class="w-full p-4 justify-start">
@@ -23,7 +35,7 @@
 
           <div class="relative inline-block text-left w-full p-2">
             <button
-              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/40 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
+              class="px-4 py-3 bg-gradient-to-r from-[#A0E13E] to-lime-400 font-extrabold tracking-wide text-black rounded-lg hover:brightness-110 hover:scale-[1.02] transition flex justify-between items-center w-full cursor-pointer"
               @click="openFillterDrop = !openFillterDrop"
             >
               {{
@@ -38,7 +50,7 @@
             </button>
             <div
               v-if="openFillterDrop"
-              class="p-2 mt-2 bg-[#0B0A0A] shadow-lg rounded-md z-50 flex flex-wrap animate-fade"
+              class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
             >
               <p class="font-bold text-xl mb-2 w-full text-start text-white">
                 ประเภท
@@ -49,8 +61,8 @@
                 class="px-4 py-2 my-1 w-full text-left rounded-md transition-colors"
                 :class="
                   currentCategory === category.key
-                    ? 'bg-[#A0E13E] text-black font-bold'
-                    : 'hover:bg-[#222] cursor-pointer'
+                    ? 'bg-[#A0E13E] text-black font-extrabold shadow-lg'
+                    : 'hover:bg-white/10 hover:pl-6 transition-all'
                 "
                 @click="
                   currentCategory !== category.key &&
@@ -63,7 +75,7 @@
           </div>
           <div class="relative inline-block text-left w-full p-2">
             <button
-              class="px-4 py-2 bg-[#A0E13E] font-bold text-white text-shadow-lg/40 rounded-md hover:bg-[#90CB38] transition flex justify-between items-center w-full cursor-pointer"
+              class="px-4 py-3 bg-gradient-to-r from-[#A0E13E] to-lime-400 font-extrabold tracking-wide text-black rounded-lg hover:brightness-110 hover:scale-[1.02] transition flex justify-between items-center w-full cursor-pointer"
               @click="openStreamimgDrop = !openStreamimgDrop"
             >
               {{ "แท็ก" }}
@@ -75,7 +87,7 @@
             </button>
             <div
               v-if="openStreamimgDrop"
-              class="p-2 mt-2 bg-[#0B0A0A] shadow-lg rounded-md z-50 flex flex-wrap animate-fade"
+              class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
             >
               <Tages
                 :genres="movieGenres"
@@ -86,16 +98,23 @@
             </div>
             <Streaming
               @update="onProviderChange"
-              class="w-full my-4 flex-shrink-0"
+              class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
             />
           </div>
         </div>
       </div>
 
-      <div class="bg-[#0B0A0A] text-white w-3/4 flex rounded-xl h-full">
+      <div
+        class="bg-gradient-to-b from-[#0E0E0E] to-black text-white w-3/4 flex rounded-xl h-full border border-white/10"
+      >
         <section class="w-full p-4">
           <div class="flex justify-between w-full mb-4 p-2">
-            <h2 class="font-bold text-4xl text-start">ภาพยนตร์</h2>
+            <h2 class="font-extrabold text-4xl tracking-wide relative">
+              ภาพยนตร์
+              <span
+                class="block w-16 h-1 bg-[#A0E13E] mt-2 rounded-full"
+              ></span>
+            </h2>
             <FilterSortbyAZ
               :items="movies"
               keyName="title"
@@ -133,7 +152,7 @@
           <button
             v-if="currentPage < totalPages"
             @click="loadMore"
-            class="px-6 py-3 bg-[#A0E13E] rounded-lg font-bold justify-center hover:bg-[#90CB38] transition w-full cursor-pointer flex items-center mb-4"
+            class="px-8 py-4 mt-6 bg-gradient-to-r from-[#A0E13E] to-lime-400 text-black font-extrabold tracking-widest rounded-xl hover:scale-105 hover:shadow-[0_0_30px_#A0E13E55] transition w-full flex justify-center items-center cursor-pointer"
           >
             ดูเพิ่มเติม
           </button>
@@ -274,14 +293,13 @@ onMounted(async () => {
   }
 });
 
-const selectedGenres = ref<number[]>([])
-
+const selectedGenres = ref<number[]>([]);
 
 const onGenreChange = async (newGenres: number[]) => {
   selectedGenres.value = newGenres;
   currentPage.value = 1;
   isLoadingMovies.value = true;
-  
+
   start();
 
   try {
@@ -425,10 +443,24 @@ watch(
   { immediate: true },
 );
 
+const selectedGenreId = computed(() => Number(route.query.genre || null));
 
-const selectedGenreId = computed(() =>
-  Number(route.query.genre || null)
-)
+const heroSeed = ref(0);
+
+watch(movies, () => {
+  heroSeed.value++;
+});
+
+const randomHeroMovie = computed(() => {
+  if (!movies.value.length) return null;
+
+  const withBackdrop = movies.value.filter((m) => m.backdrop_path);
+  if (!withBackdrop.length) return null;
+
+  const index = heroSeed.value % withBackdrop.length;
+  return withBackdrop[index];
+});
+
 </script>
 
 <style>

@@ -441,10 +441,12 @@ const popupScroll = ref<HTMLElement | null>(null);
 const { start, stop } = useGlobalLoading();
 const isFavorite = ref(false);
 const watchProviders = ref<any>(null);
+const isTogglingFavorite = ref(false);
 
 const handleToggleFavorite = async () => {
   if (!selectedItem.value) return;
-
+  if (isTogglingFavorite.value) return;
+  isTogglingFavorite.value = true;
   try {
     if (isFavorite.value) {
       await $fetch("/api/favorite", {
@@ -454,7 +456,6 @@ const handleToggleFavorite = async () => {
       });
 
       isFavorite.value = false;
-      alert("ลบออกจากรายการโปรดแล้ว 💔");
     } else {
       const genreIds = Array.isArray(selectedItem.value.genre_ids)
         ? selectedItem.value.genre_ids
@@ -469,13 +470,14 @@ const handleToggleFavorite = async () => {
         credentials: "include",
       });
       tastePieRef.value?.refreshTaste();
-      
+
       isFavorite.value = true;
-      alert("เพิ่มเข้ารายการโปรดแล้ว ❤️");
     }
   } catch (err) {
     console.error(err);
     alert("กรุณาเข้าสู่ระบบ");
+  } finally {
+    isTogglingFavorite.value = false;
   }
 };
 // alias ป้องกัน Vue warn

@@ -91,29 +91,37 @@
             {{ item.description }}
           </p>
           <div
-            class="mt-6 sm:mt-10 flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center md:justify-start"
+            class="mt-6 sm:mt-10 flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center md:justify-center"
           >
             <button
-              class="bg-green-500 w-full sm:w-40 h-12 rounded-xl cursor-pointer"
+              class="px-2 py-4 bg-green-500 w-full rounded-xl hover:scale-105 cursor-pointer"
               @click="openPopup(item.id)"
             >
               <span class="pr-1">
                 <FontAwesomeIcon icon="fa-solid fa-circle-info" />
               </span>
-              More info
+              ดูรายละเอียด
             </button>
+
             <button
-              class="w-full sm:w-40 h-12 rounded-xl transition-colors cursor-pointer"
-              :class="isFavorite(item.id) ? 'bg-pink-600' : 'bg-gray-500'"
+              class="px-2 py-4 border border-white/30 text-white w-full font-bold rounded-xl hover:scale-105 transition rounded-xl transition-colors cursor-pointer"
+              :class="isFavorite(item.id) ? 'bg-pink-600' : ''"
               @click="toggleFavorite(item)"
             >
               <span class="pr-1">
                 <FontAwesomeIcon
                   icon="fa-solid fa-heart"
-                  :class="isFavorite(item.id) ? 'text-pink-300' : 'text-white'"
+                  :class="[
+                    'transition-colors',
+                    isFavorite
+                      ? 'text-white'
+                      : 'text-white hover:text-pink-500',
+                    isTogglingFavorite ? 'opacity-50 pointer-events-none' : '',
+                  ]"
+                  @click.stop="toggleFavorite"
                 />
               </span>
-              Favorite
+              เพิ่มรายการโปรด
             </button>
           </div>
         </span>
@@ -423,9 +431,13 @@ const isFavorite = (id) => {
   return favoriteIds.value.includes(id);
 };
 
+const isTogglingFavorite = ref(false);
 // toggle favorite (ยิง API จริง)
 const toggleFavorite = async (item) => {
   if (!item?.id) return;
+  if (isTogglingFavorite.value) return;
+
+  isTogglingFavorite.value = true;
 
   try {
     if (isFavorite(item.id)) {
@@ -438,7 +450,7 @@ const toggleFavorite = async (item) => {
 
       favoriteIds.value = favoriteIds.value.filter((id) => id !== item.id);
     } else {
-const genreIds = Array.isArray(item.genre_ids)
+      const genreIds = Array.isArray(item.genre_ids)
         ? props.movie.genre_ids
         : [];
 
@@ -456,6 +468,8 @@ const genreIds = Array.isArray(item.genre_ids)
   } catch (err) {
     console.error(err);
     alert("กรูณาเข้าสู่ระบบ");
+  } finally {
+    isTogglingFavorite.value = false;
   }
 };
 </script>

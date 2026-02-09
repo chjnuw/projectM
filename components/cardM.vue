@@ -23,6 +23,7 @@
         :class="[
           'transition-colors',
           isFavorite ? 'text-pink-500' : 'text-white hover:text-pink-500',
+          isTogglingFavorite ? 'opacity-50 pointer-events-none' : '',
         ]"
         @click.stop="toggleFavorite"
       />
@@ -50,6 +51,7 @@ import { useTMDB } from "../composables/useTMDB";
 import { normalizeAgeRating } from "../utils/ageRating";
 
 const props = defineProps<{ movie: Movie }>();
+const isTogglingFavorite = ref(false);
 
 const emit = defineEmits<{
   (e: "open", id: number): void;
@@ -85,6 +87,8 @@ const loadFavoriteState = async () => {
   }
 };
 const toggleFavorite = async () => {
+  if (isTogglingFavorite.value) return;
+  isTogglingFavorite.value = true;
   try {
     if (isFavorite.value) {
       await $fetch("/api/favorite", {
@@ -94,7 +98,7 @@ const toggleFavorite = async () => {
       });
 
       isFavorite.value = false;
-      emit("favorite-changed")
+      emit("favorite-changed");
       emit("removed", props.movie.id);
     } else {
       const genreIds = Array.isArray(props.movie.genre_ids)
@@ -109,12 +113,14 @@ const toggleFavorite = async () => {
         },
         credentials: "include",
       });
-       isFavorite.value = true;
-       emit("favorite-changed")
+      isFavorite.value = true;
+      emit("favorite-changed");
     }
   } catch (err) {
     console.error(err);
     alert("กรุณาเข้าสู่ระบบ");
+  } finally {
+    isTogglingFavorite.value = false;
   }
 };
 

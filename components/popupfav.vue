@@ -85,7 +85,7 @@
 
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue"
+import {computed, watch, onMounted, onUnmounted, ref } from "vue"
 import { useFavorite } from "../composables/useFavorites"
 const emit = defineEmits<{
   (e: "close"): void
@@ -146,4 +146,33 @@ const spin = () => {
     emit("result", selectedMovie)
   }, 2000)
 }
+
+import {
+  lockBodyScroll,
+  unlockBodyScroll,
+} from "../composables/useBodyScrollLock";
+
+onMounted(() => {
+  lockBodyScroll();
+});
+
+onUnmounted(() => {
+  unlockBodyScroll();
+});
+
+const handleEsc = (e: KeyboardEvent) => {
+  if (e.key === "Escape") {
+    emit("close");
+  }
+};
+
+onMounted(() => {
+  lockBodyScroll();
+  window.addEventListener("keydown", handleEsc);
+});
+
+onUnmounted(() => {
+  unlockBodyScroll();
+  window.removeEventListener("keydown", handleEsc);
+});
 </script>

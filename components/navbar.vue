@@ -1,7 +1,7 @@
 <template>
   <nav
     :class="[
-      'fixed top-0 left-0 w-full z-[999] transition-all duration-300',
+      'fixed top-0 left-0 w-full z-40 transition-all duration-300',
       navState === 'transparent'
         ? 'bg-linear-to-t from-transparent to-black/70 translate-y-0 p-6 text-white'
         : navState === 'hidden'
@@ -133,7 +133,7 @@ let lastScroll = 0;
 watch(
   () => route.path,
   (newPath) => {
-    if (newPath === "/") {
+    if (newPath === "/" ) {
       navState.value = "transparent"; // หน้าแรกต้องโปร่งก่อน
     } else {
       navState.value = "black"; // หน้าอื่นเริ่มสีดำเลย

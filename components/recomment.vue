@@ -6,12 +6,12 @@
       <div
         v-for="(movie, index) in movies"
         :key="movie.id"
-        class="relative group cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
+        class="relative group cursor-pointer transition-transform duration-300 "
         @click="$emit('open', movie.id)"
       >
         <!-- Ribbon -->
         <div
-          class="absolute left-0 top-3 z-50 px-3 py-1 text-xs font-bold text-white rounded-r-lg shadow-md transition-all duration-300 group-hover:brightness-110"
+          class="absolute left-0 top-3 z-30 px-3 py-1 text-xs font-bold text-white rounded-r-lg shadow-md transition-all duration-300 group-hover:brightness-110"
           :class="{
             'bg-gradient-to-r from-yellow-400 to-orange-500': index === 0,
             'bg-gradient-to-r from-gray-300 to-gray-500': index === 1,
