@@ -223,8 +223,7 @@ watch(
   },
 );
 
-const avatar = ref<string | null>(null);
-const userName = ref<string | null>(null);
+
 
 const userInitial = computed(() => {
   if (!userName.value) return "";
@@ -233,20 +232,10 @@ const userInitial = computed(() => {
 
 import { $fetch } from "ofetch";
 
-onMounted(async () => {
-  try {
-    const me = await $fetch("/api/me", {
-      credentials: "include",
-    });
+const user = useUser();
 
-    console.log("ME =>", me);
-
-    avatar.value = me.image || null;
-    userName.value = me.username || null;
-  } catch (err) {
-    console.log("ME ERROR =>", err);
-  }
-});
+const avatar = computed(() => user.value?.image || null);
+const userName = computed(() => user.value?.username || null);
 
 const avatarColors = [
   "bg-[#F87171]",

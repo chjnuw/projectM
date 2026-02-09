@@ -15,11 +15,12 @@ export default defineEventHandler(async (event) => {
     // 🔹 ดึง tag ของ user
     const [rows]: any = await db.query(
       `
-      SELECT t.tmdb_genre_id
-      FROM user_tags ut
-      JOIN tag t ON t.id = ut.tag_id
-      WHERE ut.user_id = ?
-      `,
+  SELECT t.tmdb_genre_id, ut.created_at
+  FROM user_tags ut
+  JOIN tag t ON t.id = ut.tag_id
+  WHERE ut.user_id = ?
+  ORDER BY ut.created_at ASC
+  `,
       [userId],
     );
 
@@ -107,10 +108,9 @@ export default defineEventHandler(async (event) => {
     uniqueMain.sort((a, b) => b.popularity - a.popularity);
     filteredOther.sort((a, b) => b.popularity - a.popularity);
 
-    // 🏆 ล็อก main tag ให้อยู่บน 1–5 เสมอ
     const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
 
-    // 🔢 จำกัดจำนวน
+    // 🔢 แสดง 20 เรื่อง
     return finalFeed.slice(0, 20);
   } catch (err) {
     console.error("❌ recommend movies error:", err);
