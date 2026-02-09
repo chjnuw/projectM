@@ -39,11 +39,11 @@ export default defineEventHandler(async (event) => {
       let weight = 2;
 
       if (index === 0) {
-        weight = 6; // อยู่มานานมาก
+        weight = 6; 
       } else if (hours > 48) {
         weight = 3;
       } else {
-        weight = 1.5; // เพิ่งเปลี่ยน
+        weight = 1.5; 
       }
 
       return {
@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
     const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
 
     // 🔢 จำกัดจำนวน
-    return finalFeed.slice(0, 20);
+    return finalFeed.slice(0, 25);
   } catch (err) {
     console.error("❌ recommend movies error:", err);
     return [];
