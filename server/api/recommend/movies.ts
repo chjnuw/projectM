@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
     const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
 
     // 🔢 จำกัดจำนวน
-    return finalFeed.slice(0, 25);
+    return finalFeed.slice(0, 10);
   } catch (err) {
     console.error("❌ recommend movies error:", err);
     return [];
