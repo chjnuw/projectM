@@ -8,7 +8,7 @@
         </svg>
 
         <p class="text-[#000000] font-bold text-[18px] text-center px-4">
-            Are you sure you want to delete your account?
+            คุณต้องการที่จะลบบัญชีผู้ใช้ไช่ไหม ?
         </p>
 
         <div class="flex gap-4 mt-2">
@@ -16,14 +16,14 @@
             <button 
                 @click="$emit('close')"
                 class="w-[136px] h-10 rounded-[20px] text-[#FF0000] font-bold border-2 border-[#FF0000] hover:text-white hover:bg-[#ff0000] cursor-pointer">
-                Cancel
+               ยกเลิก
             </button>
 
             <!-- ปุ่ม Confirm -->
             <button 
             @click="handledelete"
                 class="w-[136px] h-10 rounded-[20px] text-white font-bold bg-[#A0E13E] hover:bg-[#7fbb32] cursor-pointer">
-                Confirm
+                ยืนยัน
             </button>
         </div>
 
