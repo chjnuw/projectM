@@ -140,7 +140,7 @@ let enFetched = false;
 const onEnter = () => {
   hoverTimer = window.setTimeout(async () => {
     isHover.value = true;
-
+    if (leaveTimer) clearTimeout(leaveTimer);
     if (!ageFetched || !enFetched) {
       isLoadingDetail.value = true;
       try {
@@ -163,10 +163,15 @@ const onEnter = () => {
   }, 1200);
 };
 
+let leaveTimer: number | null = null;
+
 const onLeave = () => {
   if (hoverTimer) clearTimeout(hoverTimer);
-  isHover.value = false;
-  isLoadingDetail.value = false;
+
+  leaveTimer = window.setTimeout(() => {
+    isHover.value = false;
+    isLoadingDetail.value = false;
+  }, 120);
 };
 
 /* ---------------- mouse ---------------- */

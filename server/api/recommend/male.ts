@@ -26,7 +26,7 @@ export default defineEventHandler(async () => {
       }
     )
 
-    return res?.results?.slice(0, 12) || []
+    return res?.results?.slice(0, 20) || []
   } catch (err) {
     console.error("❌ male recommend error:", err)
     return []

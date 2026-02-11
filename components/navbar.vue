@@ -52,14 +52,14 @@
               @click="openSearch = true"
           /></span>
         </div>
-        <NuxtLink to="/favoritescreen" reload>
+        <NuxtLink to="/favoritescreen" >
           <FontAwesomeIcon
             icon="fa-solid fa-heart"
             class="flex text-3xl cursor-pointer"
           />
         </NuxtLink>
 
-        <NuxtLink to="/profile" reload>
+        <NuxtLink to="/profile" >
           <img
             v-if="avatar"
             :src="avatar"

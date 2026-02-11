@@ -15,7 +15,7 @@
 
         <div class="flex gap-2 text-xs mt-1 items-center opacity-80">
           <span
-            v-if="ageRating"
+            v-if="ageLabel"
             class="px-2 py-1 border rounded-md font-bold backdrop-blur-md"
             :class="ageClass"
           >
@@ -59,5 +59,6 @@ defineProps<{
   ageLabel?: string;
   ageClass?: string;
   genreMap: Record<number, string>;
+  ageRating?: boolean;
 }>();
 </script>

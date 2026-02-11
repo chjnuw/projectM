@@ -2,118 +2,157 @@ import { $fetch } from "ofetch";
 import { defineEventHandler, getCookie } from "h3";
 import { db } from "~/server/db";
 
+type TagWeight = {
+  genreId: number;
+  weight: number;
+};
+
+type Movie = {
+  id: number;
+  popularity: number;
+  vote_average: number;
+  vote_count: number;
+  genre_ids: number[];
+};
+
+type ScoredMovie = Movie & {
+  _score: number;
+  _matchedTags: number;
+};
+
 export default defineEventHandler(async (event) => {
-  try {
-    const config = useRuntimeConfig();
-    const userId = getCookie(event, "user_id");
+  const config = useRuntimeConfig();
+  const userId = getCookie(event, "user_id");
+  if (!userId) return [];
 
-    // 🔹 ไม่ได้ล็อกอิน
-    if (!userId) {
-      return [];
-    }
+  // 🔹 tag เก่า → ใหม่
+  const [rows]: any = await db.query(
+    `
+    SELECT t.tmdb_genre_id, ut.created_at
+    FROM user_tags ut
+    JOIN tag t ON t.id = ut.tag_id
+    WHERE ut.user_id = ?
+    ORDER BY ut.created_at ASC
+    `,
+    [userId],
+  );
 
-    // 🔹 ดึง tag ของ user
-    const [rows]: any = await db.query(
-      `
-  SELECT t.tmdb_genre_id, ut.created_at
-  FROM user_tags ut
-  JOIN tag t ON t.id = ut.tag_id
-  WHERE ut.user_id = ?
-  ORDER BY ut.created_at ASC
-  `,
-      [userId],
-    );
+  if (!rows.length) return [];
 
-    console.log("user_id cookie:", userId);
+  const tagWeights: TagWeight[] = rows
+    .map((row: any, index: number) => ({
+      genreId: row.tmdb_genre_id,
+      weight: index === 0 ? 3 : index === 1 ? 2 : 1,
+    }))
+    .filter((t: TagWeight) => !!t.genreId);
 
-    // 🔹 แปลง tag → genreIds
-    const genreIds = rows.map((r: any) => r.tmdb_genre_id).filter(Boolean);
+  const genreIds = tagWeights.map((t) => t.genreId);
 
-    if (!genreIds.length) return [];
-
-    const now = Date.now();
-
-    const genreWeights = rows.map((row: any, index: number) => {
-      const hours =
-        (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60);
-
-      let weight = 2;
-
-      // 🏆 แท็กที่อยู่นานที่สุด
-      if (index === 0) {
-        weight = 6;
-      }
-      // ⏳ แท็กเก่าพอสมควร
-      else if (hours > 72) {
-        weight = 4;
-      }
-      // 🆕 แท็กใหม่
-      else if (hours > 24) {
-        weight = 2.5;
-      }
-      // 🐣 แท็กล่าสุด
-      else {
-        weight = 1.5;
-      }
-
-      return {
-        genreId: row.tmdb_genre_id,
-        weight,
-        isMain: index === 0,
-      };
-    });
-
-    let mainMovies: any[] = [];
-    let otherMovies: any[] = [];
-
-    for (const { genreId, weight, isMain } of genreWeights) {
-      const res: any = await $fetch(
-        "https://api.themoviedb.org/3/discover/movie",
-        {
-          headers: {
-            Authorization: `Bearer ${config.TMDB_READ_TOKEN}`,
-          },
-          query: {
-            with_genres: genreId,
-            sort_by: "popularity.desc",
-            language: "th-TH",
-            page: Math.floor(Math.random() * 5) + 1,
-          },
+  // 🔹 ดึงหลาย page
+  const movies: Movie[] = [];
+  for (const page of [1, 2, 3, 4, 5]) {
+    const res: any = await $fetch(
+      "https://api.themoviedb.org/3/discover/movie",
+      {
+        headers: {
+          Authorization: `Bearer ${config.TMDB_READ_TOKEN}`,
         },
-      );
+        query: {
+          with_genres: genreIds.join(","),
+          sort_by: "popularity.desc",
+          vote_count_gte: 50,
+          language: "th-TH",
+          page,
+        },
+      },
+    );
 
-      const picked = res.results.slice(0, Math.round(weight * 3));
+    if (res?.results) movies.push(...res.results);
+  }
 
-      if (isMain) {
-        mainMovies.push(...picked);
-      } else {
-        otherMovies.push(...picked);
-      }
+  // 🔥 แยกเป็น 3 tier
+  const tier3: ScoredMovie[] = [];
+  const tier2: ScoredMovie[] = [];
+  const tier1: ScoredMovie[] = [];
+
+  for (const movie of movies) {
+    const genres = movie.genre_ids || [];
+
+    const old = tagWeights[0]?.genreId;
+    const mid = tagWeights[1]?.genreId;
+    const newest = tagWeights[2]?.genreId;
+
+    const hasOld = !!old && genres.includes(old);
+    const hasMid = !!mid && genres.includes(mid);
+    const hasNew = !!newest && genres.includes(newest);
+
+    let tier = 0;
+
+    // 🏆 Tier 3: ครบทุกแท็กจริง ๆ เท่านั้น
+    if (hasOld && hasMid && hasNew) {
+      tier = 3;
     }
 
-    // 🧹 unique ภายในกลุ่ม
-    const uniqueMain = Array.from(
-      new Map(mainMovies.map((m) => [m.id, m])).values(),
-    );
+    // 🥈 Tier 2: ต้องมี mid + (old หรือ new)
+    // ❌ แต่ห้ามครบทุกแท็ก
+    else if (hasMid && hasNew && !hasOld) {
+      tier = 2;
+    }
 
-    const uniqueOther = Array.from(
-      new Map(otherMovies.map((m) => [m.id, m])).values(),
-    );
+    // 🥉 Tier 1: มี newest อย่างเดียวจริง ๆ
+    else if (hasNew && !hasOld && !hasMid) {
+      tier = 1;
+    } else {
+      continue;
+    }
 
-    // 🔥 ตัดหนัง other ที่ซ้ำกับ main ออก
-    const mainIds = new Set(uniqueMain.map((m) => m.id));
-    const filteredOther = uniqueOther.filter((m) => !mainIds.has(m.id));
+    const score =
+      (movie.vote_average || 0) / Math.log((movie.vote_count || 1) + 10);
 
-    // 🔃 sort ตามความนิยม
-    uniqueMain.sort((a, b) => b.popularity - a.popularity);
-    filteredOther.sort((a, b) => b.popularity - a.popularity);
+    const scored: ScoredMovie = {
+      ...movie,
+      _matchedTags: [hasOld, hasMid, hasNew].filter(Boolean).length,
+      _score: score,
+    };
 
-    const finalFeed = [...uniqueMain.slice(0, 5), ...filteredOther];
-
-    // 🔢 แสดง 20 เรื่อง
-    return finalFeed.slice(0, 20);
-  } catch (err) {
-    console.error("❌ recommend movies error:", err);
-    return [];
+    if (tier === 3) tier3.push(scored);
+    else if (tier === 2) tier2.push(scored);
+    else tier1.push(scored);
   }
+
+  function shuffleArray<T>(array: T[]): T[] {
+    return [...array].sort(() => Math.random() - 0.5);
+  }
+
+  // 🔹 sort ภายใน tier
+  tier3.sort((a, b) => b._score - a._score);
+  tier2.sort((a, b) => b._score - a._score);
+  tier1.sort((a, b) => b._score - a._score);
+
+  // ⭐ randomize เล็กน้อยใน tier
+const randomizedTier3 = shuffleArray(tier3.slice(0, 15));
+const randomizedTier2 = shuffleArray(tier2.slice(0, 15));
+const randomizedTier1 = shuffleArray(tier1.slice(0, 15));
+
+  // 🔹 quota 3 : 2 : 1 จาก 20 เรื่อง
+  const TOTAL = 20;
+  const q3 = 10;
+  const q2 = 7;
+  const q1 = 3;
+
+  let result: ScoredMovie[] = [];
+  result.push(...randomizedTier3.slice(0, q3));
+  result.push(...randomizedTier2.slice(0, q2));
+  result.push(...randomizedTier1.slice(0, q1));
+
+  // 🔹 ถ้าไม่ครบ เติมจาก tier บนลงล่าง
+  if (result.length < TOTAL) {
+    const rest = [...tier3.slice(q3), ...tier2.slice(q2), ...tier1.slice(q1)];
+    result.push(...rest.slice(0, TOTAL - result.length));
+  }
+
+  // 🔹 กันซ้ำ
+  const finalFeed = Array.from(new Map(result.map((m) => [m.id, m])).values());
+
+  return finalFeed;
 });

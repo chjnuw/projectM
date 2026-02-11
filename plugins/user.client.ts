@@ -1,8 +1,17 @@
 export default defineNuxtPlugin(async () => {
   const user = useUser();
+
+  if (user.value) return; // 🔒 กันยิงซ้ำ
+
   try {
-    user.value = await $fetch("/api/me", {
+    const me = await $fetch("/api/me", {
       credentials: "include",
     });
-  } catch {}
+
+    if (me) {
+      user.value = me;
+    }
+  } catch {
+    user.value = null; // ❗ สำคัญ
+  }
 });

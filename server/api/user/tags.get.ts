@@ -7,13 +7,13 @@ export default defineEventHandler(async (event) => {
 
   const [rows]: any = await db.query(
     `
-    SELECT t.id, t.name
-    FROM user_tags ut
-    JOIN tag t ON t.id = ut.tag_id
-    WHERE ut.user_id = ?
-     ORDER BY ut.created_at ASC
-    `,
-    [userId]
+  SELECT t.id, t.name, ut.created_at
+  FROM user_tags ut
+  JOIN tag t ON t.id = ut.tag_id
+  WHERE ut.user_id = ?
+  ORDER BY ut.created_at ASC, ut.id ASC
+  `,
+    [userId],
   );
 
   return rows;

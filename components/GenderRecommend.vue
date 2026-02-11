@@ -1,6 +1,6 @@
 <template>
-  <div class="px-2 sm:px-4 mx-auto">
-    <div class="gap-2 py-4 px-2 flex overflow-x-auto custom-scrollbar">
+  <HorizontalScroller ref="scrollerRef">
+    <div class="px-2 sm:px-4 mx-auto flex gap-2 py-4">
       <div
         v-for="movie in movies"
         :key="movie.id"
@@ -18,7 +18,7 @@
         />
       </div>
     </div>
-  </div>
+  </HorizontalScroller>
 </template>
 
 <script setup lang="ts">
@@ -30,9 +30,11 @@ const props = withDefaults(
   defineProps<{
     endpoint: string; // ⭐ API ที่จะเรียก
     size?: "xs" | "sm" | "md" | "lg";
+    genderSortMode ?: "popular" | "rating";
   }>(),
   {
     size: "md",
+    genderSortMode: "popular"
   },
 );
 
@@ -42,24 +44,9 @@ defineEmits<{
 }>();
 
 /* ---------------- state ---------------- */
-const movies = ref<any[]>([]);
+const moviesRaw = ref<any[]>([]);
 const loading = ref(false);
 
-/* ---------------- logic ---------------- */
-const loadMovies = async () => {
-  loading.value = true;
-  try {
-    const res = await $fetch<any[]>(props.endpoint, {
-      credentials: "include",
-    });
-    movies.value = res || [];
-  } catch (err) {
-    console.error("Failed to load movies:", err);
-    movies.value = [];
-  } finally {
-    loading.value = false;
-  }
-};
 
 /* ---------------- style ---------------- */
 const cardClass = computed(() => {
@@ -81,14 +68,36 @@ async function fetchRecommend() {
     const res = await $fetch<any[]>(props.endpoint, {
       credentials: "include",
     });
-    movies.value = res ?? [];
+    moviesRaw.value = res ?? [];
   } catch (e) {
     console.error("recommend error", e);
-    movies.value = [];
+    moviesRaw.value = [];
   } finally {
     loading.value = false;
   }
 }
+
+const movies = computed(() => {
+  if (props.genderSortMode === "rating") {
+    return [...moviesRaw.value].sort(
+      (a, b) => (b._score || 0) - (a._score || 0),
+    );
+  }
+
+  // popular (default)
+  return [...moviesRaw.value].sort(
+    (a, b) => (b.popularity || 0) - (a.popularity || 0),
+  );
+});
+
+const scrollerRef = ref<any>(null);
+
+watch(
+  () => props.genderSortMode,
+  () => {
+    scrollerRef.value?.scrollToStart();
+  }
+);
 
 onMounted(fetchRecommend);
 </script>
