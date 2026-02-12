@@ -60,13 +60,13 @@
           <h1 class="text-base sm:text-lg">รสนิยมการดูหนังของคุณ</h1>
         </div>
 
-        <div
+        <!-- <div
           @click="activeTab = 'monthcompare'"
           class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
           :class="{ 'bg-[#90CB38]': activeTab === 'monthcompare' }"
         >
           <h1 class="text-base sm:text-lg">เปรียบเทียบรสนิยม</h1>
-        </div>
+        </div> -->
       </div>
 
       <div
@@ -82,7 +82,7 @@
       <CardProfile v-if="activeTab === 'profile'" />
       <CardProfilepassword v-if="activeTab === 'password'" />
       <TastePie v-if="activeTab === 'chart'"/>
-      <MonthCompare v-if="activeTab === 'monthcompare'"/>
+      <!-- <MonthCompare v-if="activeTab === 'monthcompare'"/> -->
     </div>
 
     <logout v-if="showLogout" @close="showLogout = false" />

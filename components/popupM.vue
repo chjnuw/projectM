@@ -243,7 +243,12 @@
               <div class="flex mb-6 justify-between">
                 <div class="flex gap-2 opacity-80 justify-center items-center">
                   <p class="text-2xl">
-                    ⭐ {{ selectedItem.vote_average.toFixed(1) ?? "N/A" }}
+                    ⭐
+                    {{
+                      selectedItem.vote_average
+                        ? selectedItem.vote_average.toFixed(1)
+                        : "N/A"
+                    }}
                   </p>
                   <p class="text-gray-400 text-sm">
                     ({{ selectedItem.vote_count ?? 0 }} รีวิว)
@@ -496,14 +501,7 @@ const filteredCrew = computed(() => {
 });
 
 const checkFavorite = async (movieId: number) => {
-  try {
-    const favs = await $fetch<{ movie_id: number }[]>("/api/favorite", {
-      credentials: "include",
-    });
-    isFavorite.value = favs.some((f) => f.movie_id === movieId);
-  } catch {
-    isFavorite.value = false;
-  }
+  isFavorite.value = await checkIsFavorite(movieId);
 };
 
 async function checkIsFavorite(id: number) {
@@ -532,7 +530,6 @@ async function loadData(id: number) {
   await new Promise((r) => setTimeout(r, 200));
 
   // 🔥 โหลดทุกอย่าง
-  await loadTrailer(id);
   const [_, movieTH, movieEN, keywords, ageRating] = await Promise.all([
     loadTrailer(id),
     getMovieDetails(id),
@@ -544,6 +541,7 @@ async function loadData(id: number) {
 
   selectedItem.value = {
     id: movieTH.id,
+    genre_ids: movieTH.genres?.map((g) => g.id) || [],
     poster: movieTH.poster_path
       ? "https://image.tmdb.org/t/p/w500" + movieTH.poster_path
       : "img/no-poster.png",
@@ -714,11 +712,10 @@ function scrollToCurrentThumb() {
 }
 async function loadTrailer(id: number) {
   try {
-    let videos = await getMovieVideos(id);
+    let videos = await getMovieVideos(id, "th-TH");
 
     if (!videos?.results?.length) {
-      console.warn("No videos in th-TH, fallback to en-US");
-      videos = await getMovieVideos(id);
+      videos = await getMovieVideos(id, "en-US");
     }
 
     const officialTrailer = videos?.results?.find(
