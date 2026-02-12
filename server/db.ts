@@ -1,8 +1,8 @@
 // server/utils/db.ts
 import mysql from 'mysql2/promise'
 
-if (!process.env.MYSQL_PUBLIC_URL) {
-  throw new Error('❌ MYSQL_PUBLIC_URL is missing')
+if (!process.env.DB_HOST) {
+  throw new Error('❌ DB_HOST is missing')
 }
 
 export const db = mysql.createPool({
