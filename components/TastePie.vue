@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-20 mx-auto max-w-3xl rounded-3xl bg-gradient-to-b from-[#121212] to-[#0B0A0A] border border-white/10 p-8 shadow-xl"
+    class="mx-auto max-w-3xl rounded-3xl bg-gradient-to-b from-[#121212] to-[#0B0A0A] border border-white/10 p-8 shadow-xl"
   >
     <div class="flex justify-end mb-4">
       <div class="relative">
@@ -21,9 +21,7 @@
         </span>
       </div>
     </div>
-    <p v-if="trend" class="text-center text-sm text-white/60 mt-4 italic">
-      {{ trend }}
-    </p>
+
     <!-- title -->
     <h2 class="text-white text-xl font-semibold text-center mb-1">
       รสนิยมการดูหนังของคุณ
@@ -70,6 +68,7 @@
           <p class="text-lg font-bold text-[#90CB38]">
             {{ g.genre_name }}
           </p>
+
           <p class="text-white/70 text-xs text-center">
             {{ g.percent.toFixed(1) }}%
           </p>
@@ -81,7 +80,9 @@
         <span class="text-[#90CB38] font-bold"> {{ comparePercent }}% </span>
       </p> -->
     </div>
-
+    <p v-if="trend" class="text-center text-sm text-white/60 mt-4 italic">
+      {{ trend }}
+    </p>
     <p
       v-if="topMood"
       class="text-[#90CB38] font-semibold text-md text-center mt-2"
@@ -275,7 +276,7 @@ onMounted(() => {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: "right",
+              position:"bottom" ,
               labels: {
                 color: "#E5E7EB",
                 usePointStyle: true,
@@ -338,6 +339,4 @@ watch(data, () => {
   console.log("selectedMonth:", selectedMonth.value);
   console.log("data:", data.value);
 });
-
-
 </script>

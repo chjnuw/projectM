@@ -1,97 +1,148 @@
 <template>
-  <!-- ⏳ กำลังเช็ค -->
-  <div
-    v-if="pending"
-    class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center"
-  >
-    <h1 class="text-white">กำลังโหลด...</h1>
-  </div>
-
-  <!--  ไม่ได้ล็อกอิน -->
-  <div
-    v-else-if="!isLoggedIn"
-    class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center px-4"
-  >
-    <div class="flex flex-col items-center gap-6 text-center">
-      <h1 class="text-white text-xl sm:text-2xl">
-        คุณยังไม่ได้ล็อกอินบัญชีผู้ใช้
-      </h1>
-
-      <button
-        @click="goToLogin"
-        class="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#90CB38] text-white text-shadow-4xl rounded-xl font-medium cursor-pointer hover:bg-[#6da11f]"
-      >
-        เข้าสู่ระบบ
-      </button>
+  <div class="bg-[#0B0A0A]">
+    <div class="z-40 mx-[10%] mt-22">
+      <Breadcrumb />
     </div>
-  </div>
-
-  <!-- ล็อกอินแล้ว -->
-  <div
-    v-else
-    class="w-full min-h-screen flex flex-col lg:flex-row bg-[#0B0A0A] gap-8 lg:gap-20 px-4 sm:px-6 pb-20"
-  >
-    <!-- SIDEBAR -->
+    <!-- ⏳ กำลังเช็ค -->
     <div
-      class="w-full lg:w-[350px] h-auto lg:h-[450px] bg-[#0B0A0A] mt-24 lg:mt-35 rounded-3xl lg:rounded-4xl flex flex-col shadow-2xl justify-between"
+      v-if="pending"
+      class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center"
     >
-      <div>
-        <div
-          @click="activeTab = 'profile'"
-          class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center rounded-tl-3xl rounded-tr-3xl"
-          :class="{ 'bg-[#90CB38]': activeTab === 'profile' }"
-        >
-          <h1 class="text-base sm:text-lg">โปรไฟล์</h1>
-        </div>
+      <h1 class="text-white">กำลังโหลด...</h1>
+    </div>
 
-        <div
-          @click="activeTab = 'password'"
-          class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
-          :class="{ 'bg-[#90CB38]': activeTab === 'password' }"
-        >
-          <h1 class="text-base sm:text-lg">รหัสผ่าน</h1>
-        </div>
+    <!--  ไม่ได้ล็อกอิน -->
+    <div
+      v-else-if="!isLoggedIn"
+      class="w-full min-h-screen bg-[#0B0A0A] flex items-center justify-center px-4"
+    >
+      <div class="flex flex-col items-center gap-6 text-center">
+        <h1 class="text-white text-xl sm:text-2xl">
+          คุณยังไม่ได้ล็อกอินบัญชีผู้ใช้
+        </h1>
 
-        <div
-          @click="activeTab = 'chart'"
-          class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
-          :class="{ 'bg-[#90CB38]': activeTab === 'chart' }"
+        <button
+          @click="goToLogin"
+          class="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#90CB38] text-white text-shadow-4xl rounded-xl font-medium cursor-pointer hover:bg-[#6da11f]"
         >
-          <h1 class="text-base sm:text-lg">รสนิยมการดูหนังของคุณ</h1>
-        </div>
+          เข้าสู่ระบบ
+        </button>
+      </div>
+    </div>
 
-        <!-- <div
+    <!-- ล็อกอินแล้ว -->
+    <div
+      v-else
+      class="w-full flex flex-col lg:flex-row gap-6 lg:gap-20 px-4 sm:px-6 lg:px-12"
+    >
+      <!-- MOBILE TAB BAR -->
+      <div
+        class="lg:hidden mt-8 bg-gradient-to-b from-[#121212] to-[#0B0A0A] border border-white/10 rounded-3xl"
+      >
+        <div class="flex bg-[#151414] rounded-2xl p-1">
+          <button
+            @click="activeTab = 'profile'"
+            class="flex-1 py-2 rounded-xl text-xs"
+            :class="
+              activeTab === 'profile' ? 'bg-[#90CB38] text-black' : 'text-white'
+            "
+          >
+            โปรไฟล์
+          </button>
+
+          <button
+            @click="activeTab = 'password'"
+            class="flex-1 py-2 rounded-xl text-xs"
+            :class="
+              activeTab === 'password'
+                ? 'bg-[#90CB38] text-black'
+                : 'text-white'
+            "
+          >
+            รหัสผ่าน
+          </button>
+
+          <button
+            @click="activeTab = 'chart'"
+            class="flex-1 py-2 rounded-xl text-xs"
+            :class="
+              activeTab === 'chart' ? 'bg-[#90CB38] text-black' : 'text-white'
+            "
+          >
+            รสนิยมการดูหนังของคุณ
+          </button>
+
+          <div
+            @click="showLogout = true"
+            class="flex-1 py-2 rounded-xl text-xs text-[#eb1313] text-center"
+          >
+            ออกจากระบบ
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div
+        class="hidden lg:flex w-[350px] mt-20 h-auto lg:h-[450px] lg:rounded-3xl flex flex-col shadow-2xl justify-between bg-gradient-to-b from-[#121212] to-[#0B0A0A] border border-white/10"
+      >
+        <div>
+          <div
+            @click="activeTab = 'profile'"
+            class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center rounded-tl-3xl rounded-tr-3xl"
+            :class="{ 'bg-[#90CB38]': activeTab === 'profile' }"
+          >
+            <h1 class="text-base sm:text-lg">โปรไฟล์</h1>
+          </div>
+
+          <div
+            @click="activeTab = 'password'"
+            class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
+            :class="{ 'bg-[#90CB38]': activeTab === 'password' }"
+          >
+            <h1 class="text-base sm:text-lg">รหัสผ่าน</h1>
+          </div>
+
+          <div
+            @click="activeTab = 'chart'"
+            class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
+            :class="{ 'bg-[#90CB38]': activeTab === 'chart' }"
+          >
+            <h1 class="text-base sm:text-lg">รสนิยมการดูหนังของคุณ</h1>
+          </div>
+
+          <!-- <div
           @click="activeTab = 'monthcompare'"
           class="px-4 py-2 bg-[#0B0A0A] hover:bg-[#90CB38] cursor-pointer flex items-center justify-center"
           :class="{ 'bg-[#90CB38]': activeTab === 'monthcompare' }"
         >
           <h1 class="text-base sm:text-lg">เปรียบเทียบรสนิยม</h1>
         </div> -->
+        </div>
+
+        <div
+          @click="showLogout = true"
+          class="px-4 py-2 bg-[#151414] hover:bg-[#90CB38] rounded-b-3xl lg:rounded-br-3xl h-[48px] cursor-pointer flex items-center justify-center"
+        >
+          <h1 class="text-[#eb1313] text-base sm:text-lg">ออกจากระบบ</h1>
+        </div>
       </div>
 
-      <div
-        @click="showLogout = true"
-        class="px-4 py-2 bg-[#151414] hover:bg-[#90CB38] rounded-b-3xl lg:rounded-br-4xl h-[48px] cursor-pointer flex items-center justify-center"
-      >
-        <h1 class="text-[#eb1313] text-base sm:text-lg">ออกจากระบบ</h1>
+      <!-- CONTENT -->
+      <div class="flex-1 w-full mb-20 md:mt-20">
+        <CardProfile v-if="activeTab === 'profile'" />
+        <CardProfilepassword v-if="activeTab === 'password'" />
+        <TastePie v-if="activeTab === 'chart'" />
+        <!-- <MonthCompare v-if="activeTab === 'monthcompare'"/> -->
       </div>
-    </div>
 
-    <!-- CONTENT -->
-    <div class="flex-1 w-full mt-1">
-      <CardProfile v-if="activeTab === 'profile'" />
-      <CardProfilepassword v-if="activeTab === 'password'" />
-      <TastePie v-if="activeTab === 'chart'"/>
-      <!-- <MonthCompare v-if="activeTab === 'monthcompare'"/> -->
+      <logout v-if="showLogout" @close="showLogout = false" />
     </div>
-
-    <logout v-if="showLogout" @close="showLogout = false" />
   </div>
 </template>
 
 <script setup>
 definePageMeta({
-  layout: "default"
+  layout: "default",
 });
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";

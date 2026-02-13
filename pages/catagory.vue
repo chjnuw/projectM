@@ -3,7 +3,7 @@
     <section class="relative h-[80vh] w-full overflow-hidden">
       <!-- breadcrumb -->
       <div
-        class="absolute z-30 top-6 left-1/6 -translate-x-1/2 bg-black/30 rounded"
+        class="absolute z-30 top-6 left-1/3 md:left-1/6 -translate-x-1/2 bg-black/30 rounded"
       >
         <Breadcrumb />
       </div>
@@ -22,12 +22,13 @@
       <div
         class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"
       ></div>
-
     </section>
 
-    <section class="flex gap-4 p-4 mb-20 max-w-[80%] mx-auto">
+    <section
+      class="flex flex-col lg:flex-row gap-4 p-4 mb-20 max-w-full lg:max-w-[80%] mx-auto -mt-[42vh] sm:-mt-[38vh] md:-mt-[30vh] lg:mt-0 relative z-20"
+    >
       <div
-        class="bg-[#0B0A0A] text-white w-1/4 rounded-xl h-full sticky top-24 self-start border border-white/10 backdrop-blur-md"
+        class="hidden lg:block bg-white/5 backdrop-blur-xl border border-white/10 w-1/4 rounded-xl sticky top-24 self-start"
       >
         <SkeletonCatagorySkeletonSidebarFilter v-if="isLoadingGenres" />
         <div v-else class="w-full p-4 justify-start">
@@ -104,15 +105,121 @@
         </div>
       </div>
 
+      <div class="flex lg:hidden mb-4">
+        <button
+          @click="openMobileFilter = true"
+          class="w-full py-3 bg-[#A0E13E] text-black font-bold rounded-lg"
+        >
+          เปิดตัวกรอง
+        </button>
+      </div>
+
+      <transition name="fade">
+        <div
+          v-if="openMobileFilter"
+          class="fixed inset-0 bg-black/70 z-50 flex items-end"
+        >
+          <div
+            class="bg-[#0E0E0E] w-full rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto custom-scrollbar"
+          >
+            <div class="flex w-full justify-end">
+              <button class="text-white mb-4" @click="openMobileFilter = false">
+                ปิด
+              </button>
+            </div>
+
+            <SkeletonCatagorySkeletonSidebarFilter v-if="isLoadingGenres" />
+            <div v-else class="w-full p-4 justify-start">
+              <h2 class="font-bold text-2xl mb-2 w-full text-start"></h2>
+
+              <div class="relative inline-block text-left w-full p-2">
+                <button
+                  class="px-4 py-3 bg-gradient-to-r from-[#A0E13E] to-lime-400 font-extrabold tracking-wide text-black rounded-lg hover:brightness-110 hover:scale-[1.02] transition flex justify-between items-center w-full cursor-pointer"
+                  @click="openFillterDrop = !openFillterDrop"
+                >
+                  {{
+                    categories.find((c) => c.key === currentCategory)?.label ||
+                    "Filter"
+                  }}
+                  <Icon
+                    icon="weui:arrow-outlined"
+                    class="ml-1 w-4 h-4 text-white transition-transform duration-200"
+                    :class="{ 'rotate-90': openFillterDrop }"
+                  />
+                </button>
+                <div
+                  v-if="openFillterDrop"
+                  class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
+                >
+                  <p
+                    class="font-bold text-xl mb-2 w-full text-start text-white"
+                  >
+                    ประเภท
+                  </p>
+                  <button
+                    v-for="category in categories"
+                    :key="category.key"
+                    class="px-4 py-2 my-1 w-full text-left rounded-md transition-colors"
+                    :class="
+                      currentCategory === category.key
+                        ? 'bg-[#A0E13E] text-black font-extrabold shadow-lg'
+                        : 'hover:bg-white/10 hover:pl-6 transition-all'
+                    "
+                    @click="
+                      currentCategory !== category.key &&
+                      selectCategory(category.key)
+                    "
+                  >
+                    {{ category.label }}
+                  </button>
+                </div>
+              </div>
+              <div class="relative inline-block text-left w-full p-2">
+                <button
+                  class="px-4 py-3 bg-gradient-to-r from-[#A0E13E] to-lime-400 font-extrabold tracking-wide text-black rounded-lg hover:brightness-110 hover:scale-[1.02] transition flex justify-between items-center w-full cursor-pointer"
+                  @click="openStreamimgDrop = !openStreamimgDrop"
+                >
+                  {{ "แท็ก" }}
+                  <Icon
+                    icon="weui:arrow-outlined"
+                    class="ml-1 w-4 h-4 text-white transition-transform duration-200"
+                    :class="{ 'rotate-90': openStreamimgDrop }"
+                  />
+                </button>
+                <div
+                  v-if="openStreamimgDrop"
+                  class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
+                >
+                  <Tages
+                    :genres="movieGenres"
+                    :selectedGenres="selectedGenres"
+                    @update:selectedGenres="onGenreChange"
+                    class="w-full"
+                  />
+                </div>
+                <Streaming
+                  @update="onProviderChange"
+                  class="p-3 mt-3 bg-black/90 border border-white/10 shadow-2xl rounded-xl z-50 flex flex-wrap animate-fade"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
       <div
-        class="bg-gradient-to-b from-[#0E0E0E] to-black text-white w-3/4 flex rounded-xl h-full border border-white/10"
+        class="bg-gradient-to-b from-[#0E0E0E] to-black text-white w-full lg:w-3/4 flex rounded-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
       >
         <section class="w-full p-4">
-          <div class="flex justify-between w-full mb-4 p-2">
-            <h2 class="font-extrabold text-4xl tracking-wide relative">
+          <div
+            class="flex flex-col sm:flex-row justify-between w-full mb-4 p-2 gap-4"
+          >
+            <h2
+              class="font-extrabold text-2xl sm:text-4xl tracking-wide relative"
+            >
               ภาพยนตร์
               <span
-                class="block w-16 h-1 bg-[#A0E13E] mt-2 rounded-full"
+                class="block w-8 md:w-16 h-1 bg-[#A0E13E] mt-2 rounded-full"
               ></span>
             </h2>
             <FilterSortbyAZ
@@ -131,7 +238,7 @@
             />
             <div
               v-else
-              class="grid gap-2 px-4 py-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              class="grid gap-2 px-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             >
               <CardM
                 v-for="movie in movies"
@@ -152,7 +259,7 @@
           <button
             v-if="currentPage < totalPages"
             @click="loadMore"
-            class="px-8 py-4 mt-6 bg-gradient-to-r from-[#A0E13E] to-lime-400 text-black font-extrabold tracking-widest rounded-xl hover:scale-105 hover:shadow-[0_0_30px_#A0E13E55] transition w-full flex justify-center items-center cursor-pointer"
+            class="px-8 py-4 bg-gradient-to-r from-[#A0E13E] to-lime-400 text-black font-extrabold tracking-widest rounded-xl hover:scale-105 hover:shadow-[0_0_30px_#A0E13E55] transition w-full flex justify-center items-center cursor-pointer"
           >
             ดูเพิ่มเติม
           </button>
@@ -461,6 +568,17 @@ const randomHeroMovie = computed(() => {
   return withBackdrop[index];
 });
 
+// ==== mobilefulter ===
+const openMobileFilter = ref(false);
+
+// === ปิด scroll พิ้นหลัง mobilefillter ===
+watch(openMobileFilter, (val) => {
+  if (val) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
 </script>
 
 <style>

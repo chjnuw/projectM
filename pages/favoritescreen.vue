@@ -1,4 +1,7 @@
 <template>
+  <div class="z-40 mx-[10%] mt-22">
+    <Breadcrumb />
+  </div>
   <!-- ⏳ loading -->
   <div
     v-if="pending"
@@ -27,7 +30,7 @@
   <!-- ✅ logged in -->
   <div
     v-else
-    class="w-full max-w-[1200px] mx-auto mt-32 bg-[#0B0A0A] px-4 rounded-2xl mb-10 p-10"
+    class="w-full max-w-[1200px] mx-auto bg-[#0B0A0A] m-4 px-4 rounded-2xl mb-10 p-10"
   >
     <!-- HEADER -->
     <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-4 pt-6">
@@ -85,52 +88,107 @@
       </transition>
     </div>
 
-
     <!-- recommend -->
     <div class="mt-10 mb-10 px-2">
-      <div class="flex items-center gap-3 mb-3">
-        <h2 class="font-bold text-xl md:text-2xl">แนะนำสำหรับคุณ</h2>
-        <div class="flex-1 border-b border-gray-700"></div>
-      </div>
-
-      <p class="text-gray-500 text-sm mb-3">จากแนวหนังที่คุณชื่นชอบ</p>
-
-      <div v-if="userTags.length" class="flex gap-2 flex-wrap text-sm mb-4">
-        <span
-          v-for="tag in userTags"
-          :key="tag.id"
-          class="px-3 py-1 rounded-full bg-green-600/20 text-green-400"
+      <div
+        class="mb-4 flex flex-col md:flex-row md:items-center gap-2 md:gap-3"
+      >
+        <h2
+          class="font-bold text-xl sm:text-2xl whitespace-normal sm:whitespace-nowrap"
         >
-          # {{ tag.name }}
-        </span>
+          แนะนำสำหรับคุณ
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">จากแนวหนังที่คุณชื่นชอบ</p>
+        <div class="hidden md:block flex-1 border-b-2"></div>
       </div>
 
-      <Recomment @open="openPopup"/>
-      
+      <div
+        v-if="userTags.length"
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
+        <div class="flex gap-2 flex-wrap text-sm max-w-full overflow-hidden">
+          <TransitionGroup name="tag">
+            <span
+              v-for="tag in userTags"
+              :key="tag.id"
+              class="px-2.5 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-500/20"
+            >
+              # {{ tag.name }}
+            </span>
+          </TransitionGroup>
+        </div>
+
+        <div
+          class="flex w-full sm:w-auto bg-white/5 backdrop-blur rounded-full p-1 border border-white/10"
+        >
+          <button
+            @click="sortMode = 'default'"
+            :class="[
+              'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
+              sortMode === 'default'
+                ? 'bg-green-600 text-white shadow'
+                : 'text-gray-400 hover:text-white cursor-pointer',
+            ]"
+          >
+            แนะนำ
+          </button>
+
+          <button
+            @click="sortMode = 'popular'"
+            :class="[
+              'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
+              sortMode === 'popular'
+                ? 'bg-green-600 text-white shadow'
+                : 'text-gray-400 hover:text-white cursor-pointer',
+            ]"
+          >
+            นิยม
+          </button>
+
+          <button
+            @click="sortMode = 'rating'"
+            :class="[
+              'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
+              sortMode === 'rating'
+                ? 'bg-green-600 text-white shadow'
+                : 'text-gray-400 hover:text-white cursor-pointer',
+            ]"
+          >
+            เรทคะแนน
+          </button>
+        </div>
+      </div>
+
+      <!-- 🎬 มี tag → แนะนำ -->
+      <Recomment
+        v-if="userTags.length"
+        :sort-mode="sortMode"
+        @open="openPopup"
+      />
     </div>
     <!-- <TastePie /> -->
   </div>
-      <!-- popup movie -->
-    <PopupM
-      v-if="showPopup && selectedId !== null"
-      :selectedId="selectedId"
-      @close="showPopup = false"
-    />
+  <!-- popup movie -->
+  <PopupM
+    v-if="showPopup && selectedId !== null"
+    :selectedId="selectedId"
+    @close="showPopup = false"
+  />
 
-    <!-- popup fav -->
-    <Popupfav
-      v-if="showFavPopup"
-      @close="showFavPopup = false"
-      @result="openResult"
-    />
+  <!-- popup fav -->
+  <Popupfav
+    v-if="showFavPopup"
+    @close="showFavPopup = false"
+    @result="openResult"
+  />
 
-    <PopupResultFav
-      v-if="resultMovie"
-      :movie="resultMovie"
-      @close="resultMovie = null"
-      @view="openMovieDetail"
-      @retry="retrySpin"
-    />
+  <PopupResultFav
+    v-if="resultMovie"
+    :movie="resultMovie"
+    @close="resultMovie = null"
+    @view="openMovieDetail"
+    @retry="retrySpin"
+  />
 </template>
 
 <script setup lang="ts">
@@ -139,10 +197,10 @@ import { useRouter } from "vue-router";
 import type { Movie } from "../Type/tmdb";
 import { useTMDB } from "../composables/useTMDB";
 
-
-
 /* router */
 const router = useRouter();
+
+const sortMode = ref<"popular" | "rating">("popular");
 
 /* login */
 const { pending, error } = await useFetch("/api/profile", {

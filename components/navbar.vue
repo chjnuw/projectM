@@ -1,70 +1,73 @@
 <template>
+  <!-- NAVBAR -->
   <nav
     :class="[
       'fixed top-0 left-0 w-full z-40 transition-all duration-300',
       navState === 'transparent'
-        ? 'bg-linear-to-t from-transparent to-black/70 translate-y-0 p-6 text-white'
+        ? 'bg-gradient-to-t from-transparent to-black/70 translate-y-0'
         : navState === 'hidden'
-          ? '-translate-y-full p-0'
-          : 'bg-black/100 translate-y-0 p-6 text-white',
+          ? '-translate-y-full'
+          : 'bg-black/100 translate-y-0',
     ]"
   >
     <div
-      class="flex justify-evenly items-center h-10 overflow-hidden text-white text-sm sm:text-base"
+      class="flex justify-evenly items-center h-15 lg:h-20 px-4 sm:px-6 lg:px-10 text-white"
     >
-      <div class="flex justify-center gap-4">
-        <div class="flex items-center">
-          <img src="/img/logo.png" alt="Logo" class="size-30 object-contain" />
-        </div>
-        <div class="items-center list-none gap-4 p-4 hidden text-lg lg:flex">
-          <li
-            class="hover:cursor-pointer hover:text-[#a0e13e] duration-300"
-            :class="{ 'text-[#a0e13e]': $route.path === '/' }"
-          >
-            <NuxtLink to="/"> หน้าหลัก </NuxtLink>
+      <!-- LEFT -->
+      <div class="flex items-center gap-4">
+        <!-- Mobile hamburger -->
+        <button class="lg:hidden" @click="mobileMenu = true">
+          <Icon icon="heroicons:bars-3" class="w-6 h-6" />
+        </button>
+
+        <!-- Logo -->
+        <img
+          src="/img/logo.png"
+          alt="Logo"
+          class="w-24 sm:w-28 lg:w-32 object-contain"
+        />
+
+        <!-- Desktop menu -->
+        <ul class="hidden lg:flex gap-6 text-lg">
+          <li :class="menuClass('/')">
+            <NuxtLink to="/">หน้าหลัก</NuxtLink>
           </li>
-          <li
-            class="hover:cursor-pointer hover:text-[#a0e13e] duration-300"
-            :class="{ 'text-[#a0e13e]': $route.path === '/catagory' }"
-          >
-            <NuxtLink to="/catagory"> หมวดหมู่ </NuxtLink>
+          <li :class="menuClass('/catagory')">
+            <NuxtLink to="/catagory">หมวดหมู่</NuxtLink>
           </li>
-          <li
-            class="hover:cursor-pointer hover:text-[#a0e13e] duration-300"
-            :class="{ 'text-[#a0e13e]': $route.path === '/actor' }"
-          >
-            <NuxtLink to="/actor"> นักแสดง </NuxtLink>
+          <li :class="menuClass('/actor')">
+            <NuxtLink to="/actor">นักแสดง</NuxtLink>
           </li>
-          <li
-            class="hover:cursor-pointer hover:text-[#a0e13e] duration-300"
-            :class="{ 'text-[#a0e13e]': $route.path === '/randomscreen' }"
-          >
-            <NuxtLink to="randomscreen"> สุ่มภาพยนตร์ </NuxtLink>
+          <li :class="menuClass('/randomscreen')">
+            <NuxtLink to="/randomscreen">สุ่มภาพยนตร์</NuxtLink>
           </li>
-        </div>
+        </ul>
       </div>
-      <div class="flex justify-center gap-4 items-center">
-        <div class="hidden lg:flex">
-          <span
-            ><FontAwesomeIcon
-              icon="fa-solid fa-magnifying-glass"
-              class="text-2xl cursor-pointer"
-              @click="openSearch = true"
-          /></span>
-        </div>
-        <NuxtLink to="/favoritescreen" >
+
+      <!-- RIGHT -->
+      <div class="flex items-center gap-4">
+        <!-- Search (desktop) -->
+        <button @click="openSearch = true">
+          <FontAwesomeIcon
+            icon="fa-solid fa-magnifying-glass"
+            class="text-sm sm:text-lg lg:text-xl"
+          />
+        </button>
+
+        <!-- Favorite -->
+        <NuxtLink to="/favoritescreen">
           <FontAwesomeIcon
             icon="fa-solid fa-heart"
-            class="flex text-3xl cursor-pointer"
+            class="text-sm sm:text-lg lg:text-xl"
           />
         </NuxtLink>
 
-        <NuxtLink to="/profile" >
+        <!-- Profile -->
+        <NuxtLink to="/profile">
           <img
             v-if="avatar"
             :src="avatar"
-            alt="user avatar"
-            class="w-9 h-9 rounded-full object-cover border border-white/20 hover:opacity-80"
+            class="w-9 h-9 rounded-full object-cover border border-white/20"
           />
 
           <div
@@ -78,26 +81,72 @@
           <FontAwesomeIcon
             v-else
             icon="fa-regular fa-circle-user"
-            class="text-3xl cursor-pointer"
+            class="text-3xl"
           />
         </NuxtLink>
       </div>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <transition name="slide">
+    <div
+      v-show="mobileMenu"
+      class="fixed inset-0 z-[998] bg-black/80 backdrop-blur-sm"
+    >
+      <div class="w-[40vh] bg-black h-full flex flex-col gap-6 text-white px-4 py-2">
+        <div class="flex justify-between items-center">
+          <img
+            src="/img/logo.png"
+            alt="Logo"
+            class="w-24 sm:w-28 lg:w-32 object-contain"
+          />
+          <button class="text-xl" @click="mobileMenu = false">
+            ✕
+          </button>
+        </div>
+
+        <NuxtLink to="/" :class="menuClass('/')" @click="mobileMenu = false"
+          >หน้าหลัก</NuxtLink
+        >
+        <NuxtLink
+          to="/catagory"
+          :class="menuClass('/catagory')"
+          @click="mobileMenu = false"
+          >หมวดหมู่</NuxtLink
+        >
+        <NuxtLink
+          to="/actor"
+          :class="menuClass('/actor')"
+          @click="mobileMenu = false"
+          >นักแสดง</NuxtLink
+        >
+        <NuxtLink
+          to="/randomscreen"
+          :class="menuClass('/randomscreen')"
+          @click="mobileMenu = false"
+        >
+          สุ่มภาพยนตร์
+        </NuxtLink>
+      </div>
+
+      <div class="flex-1" @click="mobileMenu = false"></div>
+    </div>
+  </transition>
+
+  <!-- SEARCH OVERLAY -->
   <transition name="search-fade">
     <div
-      v-if="openSearch"
+      v-show="openSearch"
       class="fixed inset-0 z-[999] bg-black/95 backdrop-blur-sm flex flex-col"
     >
-      <!-- Close -->
       <button
-        class="absolute top-6 right-6 text-white text-2xl cursor-pointer z-50 text-white/70 hover:text-white transition duration-200"
+        class="absolute top-6 right-6 text-white text-2xl"
         @click="openSearch = false"
       >
         ✕
       </button>
 
-      <!-- Search box -->
       <div class="mt-40 max-w-2xl mx-auto w-full px-6">
         <MovieSearch
           autofocus
@@ -109,6 +158,8 @@
       </div>
     </div>
   </transition>
+
+  <!-- POPUP -->
   <PopupM
     v-if="showPopup"
     :selectedId="selectedId"
@@ -116,68 +167,69 @@
     @close="showPopup = false"
   />
 </template>
+
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useGlobalLoading } from "../composables/useGlobalLoading";
 
 const route = useRoute();
+const { start } = useGlobalLoading();
+
+const navState = ref("black");
+const mobileMenu = ref(false);
+const openSearch = ref(false);
 const showPopup = ref(false);
 const selectedId = ref(null);
 const searchRef = ref(null);
-const { start, stop } = useGlobalLoading();
 
-const navState = ref("black"); // "transparent" | "hidden" | "black"
 let lastScroll = 0;
 
+/* ---------------- SCROLL CONTROL ---------------- */
 watch(
   () => route.path,
-  (newPath) => {
-    if (newPath === "/" ) {
-      navState.value = "transparent"; // หน้าแรกต้องโปร่งก่อน
-    } else {
-      navState.value = "black"; // หน้าอื่นเริ่มสีดำเลย
-    }
+  (path) => {
+    navState.value = path === "/" ? "transparent" : "black";
   },
-  { immediate: true }, // ให้เช็คทันทีตอน render ครั้งแรก
+  { immediate: true },
 );
 
 const handleScroll = () => {
-  const currentScroll = window.scrollY;
+  const current = window.scrollY;
 
   if (route.path !== "/") {
-    navState.value = currentScroll > lastScroll ? "hidden" : "black";
-    lastScroll = currentScroll;
+    navState.value = current > lastScroll ? "hidden" : "black";
+    lastScroll = current;
     return;
   }
 
-  if (currentScroll <= 50) {
-    // อยู่บนสุด → โปร่ง
-    navState.value = "transparent";
-  } else if (currentScroll > lastScroll) {
-    // เลื่อนลง → ซ่อน nav
-    navState.value = "hidden";
-  } else {
-    // เลื่อนขึ้น → สีดำ
-    navState.value = "black";
-  }
+  if (current <= 50) navState.value = "transparent";
+  else if (current > lastScroll) navState.value = "hidden";
+  else navState.value = "black";
 
-  lastScroll = currentScroll;
+  lastScroll = current;
 };
 
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
+  document.addEventListener("keydown", handleEsc);
 });
-
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  document.removeEventListener("keydown", handleEsc);
 });
 
-const openSearch = ref(false);
+/* ---------------- ESC ---------------- */
+const handleEsc = (e: KeyboardEvent) => {
+  if (e.key !== "Escape") return;
 
-const emit = defineEmits(["search-select"]);
+  if (showPopup.value) showPopup.value = false;
+  else if (openSearch.value) openSearch.value = false;
+  else if (mobileMenu.value) mobileMenu.value = false;
+};
 
-const onSelectSearchMovie = async (movie) => {
+/* ---------------- SEARCH SELECT ---------------- */
+const onSelectSearchMovie = async (movie: any) => {
   if (!movie?.id) return;
   openSearch.value = false;
   await nextTick();
@@ -186,86 +238,53 @@ const onSelectSearchMovie = async (movie) => {
   showPopup.value = true;
 };
 
-watch(openSearch, (val) => {
-  document.body.style.overflow = val ? "hidden" : "";
+/* ---------------- BODY LOCK ---------------- */
+watch([mobileMenu, openSearch], ([m, s]) => {
+  document.body.style.overflow = m || s ? "hidden" : "";
 });
 
-const handleEsc = (e) => {
-  if (e.key !== "Escape") return;
-
-  if (showPopup.value) {
-    showPopup.value = false;
-    return;
-  }
-
-  if (openSearch.value) {
-    openSearch.value = false;
-    return;
-  }
-};
-
-onMounted(() => document.addEventListener("keydown", handleEsc));
-onUnmounted(() => document.removeEventListener("keydown", handleEsc));
-
-watch(openSearch, async (val) => {
-  document.body.style.overflow = val ? "hidden" : "";
-
-  if (val) {
-    await nextTick();
-    searchRef.value?.focusInput(); // ⭐ โฟกัสทันที
-  }
-});
-
-watch(
-  () => route.fullPath,
-  () => {
-    openSearch.value = false; // ✅ ปิด overlay ทุกครั้งที่เปลี่ยนหน้า
-  },
-);
-
-
-
-const userInitial = computed(() => {
-  if (!userName.value) return "";
-  return userName.value.trim().charAt(0);
-});
-
-import { $fetch } from "ofetch";
-
+/* ---------------- USER ---------------- */
 const user = useUser();
 
 const avatar = computed(() => user.value?.image || null);
 const userName = computed(() => user.value?.username || null);
+const userInitial = computed(() =>
+  userName.value ? userName.value.charAt(0) : "",
+);
 
 const avatarColors = [
-  "bg-[#F87171]",
-  "bg-[#FB923C]",
-  "bg-[#FACC15]",
-  "bg-[#4ADE80]",
-  "bg-[#22D3EE]",
-  "bg-[#60A5FA]",
-  "bg-[#A78BFA]",
-  "bg-[#F472B6]",
+  "bg-red-400",
+  "bg-orange-400",
+  "bg-yellow-400",
+  "bg-green-400",
+  "bg-cyan-400",
+  "bg-blue-400",
+  "bg-purple-400",
+  "bg-pink-400",
 ];
 
 const avatarBg = computed(() => {
   if (!userName.value) return "bg-gray-400";
-
   let hash = 0;
   for (let i = 0; i < userName.value.length; i++) {
     hash = userName.value.charCodeAt(i) + ((hash << 5) - hash);
   }
-
-  const index = Math.abs(hash) % avatarColors.length;
-  return avatarColors[index];
+  return avatarColors[Math.abs(hash) % avatarColors.length];
 });
+
+/* ---------------- ACTIVE MENU ---------------- */
+const menuClass = (path: string) => [
+  "hover:text-lime-400 transition duration-300 cursor-pointer",
+  route.path === path ? "text-lime-400" : "",
+];
 </script>
 
 <style>
-/* optional: เพิ่ม shadow เล็ก ๆ เวลา visible */
 nav {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Search fade */
 .search-fade-enter-from {
   opacity: 0;
 }
@@ -275,7 +294,6 @@ nav {
 .search-fade-enter-active {
   transition: opacity 0.35s ease;
 }
-
 .search-fade-leave-from {
   opacity: 1;
 }
@@ -284,5 +302,25 @@ nav {
 }
 .search-fade-leave-active {
   transition: opacity 0.25s ease;
+}
+
+/* Mobile slide */
+.slide-enter-from {
+  transform: translateX(-100%);
+}
+.slide-enter-to {
+  transform: translateX(0);
+}
+.slide-enter-active {
+  transition: transform 0.3s ease;
+}
+.slide-leave-from {
+  transform: translateX(0);
+}
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+.slide-leave-active {
+  transition: transform 0.25s ease;
 }
 </style>

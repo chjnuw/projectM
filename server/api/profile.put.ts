@@ -89,4 +89,5 @@ export default defineEventHandler(async (event) => {
     console.error('PROFILE PUT ERROR:', err)
     throw err
   }
+  
 })

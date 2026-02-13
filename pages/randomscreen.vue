@@ -1,4 +1,7 @@
 <template>
+    <div class="z-40 mx-[10%] mt-22">
+      <Breadcrumb />
+    </div>
   <!-- ⏳ กำลังเช็ค login (คงเดิม) -->
   <div
     v-if="pending"
@@ -29,7 +32,7 @@
   <!-- ✅ ล็อกอินแล้ว -->
   <div
     v-else
-    class="relative mt-16 sm:mt-20 min-h-screen text-white bg-gradient-to-br from-black via-[#0b0b0b] to-[#111] flex flex-col lg:flex-row gap-6 lg:gap-8 p-4 sm:p-6 overflow-hidden"
+    class="relative min-h-screen text-white bg-gradient-to-br from-black via-[#0b0b0b] to-[#111] flex flex-col-reverse lg:flex-row gap-6 lg:gap-8 p-4 sm:p-6 overflow-hidden"
   >
     <!-- glow bg -->
     <div

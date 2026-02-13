@@ -1,6 +1,8 @@
 <template>
+  <SkeletonIndexSkeletonSlide v-if="!items.length" />
   <div
-    class="relative w-full h-[70vh] sm:h-[80vh] lg:h-[100vh] justify-center items-center text-white overflow-hidden group"
+    v-else
+    class="relative w-full sm:h-[80vh] lg:h-[100vh] justify-center items-center text-white overflow-hidden group"
   >
     <div
       class="flex transition-transform duration-700 ease-in-out h-full"
@@ -13,21 +15,21 @@
       >
         <img
           :src="item.lq"
-          class="absolute inset-0 w-full h-full object-cover blur-lg scale-105 transition-opacity duration-700 object-top"
+          class="absolute inset-0 w-full h-full object-cover blur-lg scale-105 transition-opacity duration-700 object-center lg:object-top"
           :class="item.loadedHD ? 'opacity-100' : 'opacity-0'"
         />
 
         <img
           v-if="item.loadedHD"
           :src="item.hd"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 object-top"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 object-center lg:object-top"
           :class="item.loadedHD ? 'opacity-100' : 'opacity-0'"
         />
 
         <img
           v-if="item.loadedFull"
           :src="item.full"
-          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 object-top"
+          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 object-center lg:object-top"
           :class="item.loadedHD ? 'opacity-100' : 'opacity-0'"
         />
 
@@ -42,29 +44,100 @@
           class="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30 pointer-events-none"
         ></div>
         <!-- ======================================================================================================================== -->
+
+        <!-- ================= MOBILE Slide ================= -->
+        <div class="lg:hidden relative w-full aspect-[2/3] overflow-hidden">
+          <!-- overlay gradient -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"
+          ></div>
+
+          <!-- overlay content -->
+          <div class="absolute bottom-0 w-full px-5 pb-6 space-y-2 mb-4">
+            <h1 class="text-xl font-bold">
+              {{ displayTitle.main }}
+            </h1>
+
+            <p v-if="displayTitle.sub" class="text-gray-300 text-sm">
+              {{ displayTitle.sub }}
+            </p>
+
+            <div class="flex items-center gap-2 text-xs">
+              <span
+                class="px-2 py-1 border rounded-md font-bold"
+                :class="normalizeAgeRating(item.ageRating).class"
+              >
+                {{ normalizeAgeRating(item.ageRating).label }}
+              </span>
+
+              <span>· {{ item.release }}</span>
+            </div>
+
+            <p class="text-xs text-green-400">
+              {{ item.tages?.map((t) => t.name).join(" , ") }}
+            </p>
+
+            <p class="text-xs line-clamp-3 indent-8">
+              {{ item.description }}
+            </p>
+
+            <div class="flex gap-3 pt-2">
+              <button
+                class="flex-1 bg-green-500 px-4 py-2 rounded-lg text-xs"
+                @click="openPopup(item.id)"
+              >
+                รายละเอียด
+              </button>
+
+              <button
+                class="flex-1 border border-white/30 px-4 py-2 rounded-lg text-xs transition-colors flex items-center justify-center cursor-pointer"
+                :class="isFavorite(item.id) ? 'bg-pink-600' : ''"
+                @click="toggleFavorite(item)"
+              >
+                <span class="pr-1">
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-heart"
+                    :class="[
+                      'transition-colors ',
+                      isFavorite(item.id)
+                        ? 'text-white'
+                        : 'text-white hover:text-pink-500',
+                      isTogglingFavorite
+                        ? 'opacity-50 pointer-events-none'
+                        : '',
+                    ]"
+                    @click.stop="toggleFavorite"
+                  />
+                </span>
+                เพิ่มรายการโปรด
+              </button>
+            </div>
+          </div>
+        </div>
+
         <span
           :class="[
-            'absolute top-1/2 -translate-y-1/2 text-white p-4 w-1/3',
-            item.textPosition === 'left'
-              ? 'left-[5%] text-left '
-              : 'right-[5%] text-left',
+            'absolute w-[90%] sm:w-[70%] md:w-1/2 lg:w-1/3 px-4 hidden lg:block',
+            'bottom-6 left-1/2 -translate-x-1/2',
+            'md:top-1/2 md:-translate-y-1/2 md:left-[5%] md:translate-x-0',
+            item.textPosition === 'right' ? 'md:left-auto md:right-[5%]' : '',
           ]"
         >
           <p
-            class="text-5xl font-bold text-shadow-lg/40 drop-shadow-lg/70 text-center"
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center text-shadow-lg/40 drop-shadow-lg/100"
           >
             {{ displayTitle.main }}
           </p>
 
           <p
             v-if="displayTitle.sub"
-            class="text-2xl text-gray-300 text-center text-shadow-lg/40 drop-shadow-lg/70 mt-3"
+            class="text-base sm:text-lg md:text-xl mt-2 text-center text-shadow-lg/40 drop-shadow-lg/100"
           >
             {{ displayTitle.sub }}
           </p>
 
           <p
-            class="mt-2 p-2 text-shadow-lg/40 drop-shadow-lg/100 text-base justify-center flex text-center w-full items-center gap-2"
+            class="mt-3 text-sm overflow-hidden text-shadow-lg/40 drop-shadow-lg/100 justify-center flex items-center h-auto gap-2"
           >
             <span
               class="px-2 py-1 border rounded-md font-bold backdrop-blur-md"
@@ -113,7 +186,7 @@
                   icon="fa-solid fa-heart"
                   :class="[
                     'transition-colors',
-                    isFavorite
+                    isFavorite(item.id)
                       ? 'text-white'
                       : 'text-white hover:text-pink-500',
                     isTogglingFavorite ? 'opacity-50 pointer-events-none' : '',
@@ -143,7 +216,9 @@
         <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
       </button>
     </div>
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+    <div
+      class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 hidden lg:flex"
+    >
       <div
         v-for="(item, i) in items"
         :key="i"
@@ -152,12 +227,13 @@
         @click="goToSlide(i)"
       ></div>
     </div>
-    <PopupM
-      v-if="showPopup"
-      :selectedId="selectedId"
-      @close="showPopup = false"
-    />
   </div>
+
+  <PopupM
+    v-if="showPopup"
+    :selectedId="selectedId"
+    @close="showPopup = false"
+  />
 </template>
 
 <script setup>

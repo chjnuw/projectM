@@ -7,7 +7,7 @@
       class="bg-gradient-to-b from-[#0E0E0E] to-black text-white h-full flex flex-wrap justify-center rounded-xl max-w-[80%] mx-auto mb-20 m-4 border border-white/10 backdrop-blur-md"
     >
       <h2
-        class="font-extrabold text-3xl md:text-4xl text-center mt-8 tracking-wide"
+        class="font-extrabold text-2xl md:text-3xl md:text-4xl text-center mt-8 tracking-wide"
       >
         นักแสดงยอดนิยม
       </h2>
@@ -49,7 +49,7 @@
           <div
             @click="emit('click')"
             v-if="loading || actors.length"
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 px-2 sm:px-4 pt-6 w-full max-w-[1500px] mx-auto"
+            class="grid gap-2 px-4 py-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 px-2 sm:px-4 pt-6 w-full max-w-[1500px] mx-auto"
           >
             <template v-if="loading">
               <SkeletonActSkeletonActorCard

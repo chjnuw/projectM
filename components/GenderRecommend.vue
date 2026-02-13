@@ -30,11 +30,11 @@ const props = withDefaults(
   defineProps<{
     endpoint: string; // ⭐ API ที่จะเรียก
     size?: "xs" | "sm" | "md" | "lg";
-    genderSortMode ?: "popular" | "rating";
+    genderSortMode ?: "default" | "popular" | "rating";
   }>(),
   {
     size: "md",
-    genderSortMode: "popular"
+    genderSortMode: "default"
   },
 );
 
@@ -78,15 +78,23 @@ async function fetchRecommend() {
 }
 
 const movies = computed(() => {
+  const list = [...moviesRaw.value];
+
   if (props.genderSortMode === "rating") {
-    return [...moviesRaw.value].sort(
-      (a, b) => (b._score || 0) - (a._score || 0),
+    return list.sort(
+      (a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0)
     );
   }
 
-  // popular (default)
-  return [...moviesRaw.value].sort(
-    (a, b) => (b.popularity || 0) - (a.popularity || 0),
+  if (props.genderSortMode === "popular") {
+    return list.sort(
+      (a, b) => (b.popularity ?? 0) - (a.popularity ?? 0)
+    );
+  }
+
+  // ✅ default → ใช้ _score (recommend score)
+  return list.sort(
+    (a, b) => (b._score ?? 0) - (a._score ?? 0)
   );
 });
 

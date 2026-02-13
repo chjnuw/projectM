@@ -1,37 +1,37 @@
 <template>
-<HorizontalScroller ref="scrollerRef">
-  <div class="px-2 sm:px-4 mx-auto flex gap-2 py-4">
-    <div
-      v-for="(movie, index) in movies"
-      :key="movie.id"
-      class="relative cursor-pointer transition-transform duration-300 flex-shrink-0"
-      @click="$emit('open', movie.id)"
-    >
-          <!-- Ribbon -->
-          <div
-            class="absolute left-0 top-3 z-30 px-3 py-1 text-xs font-bold text-white rounded-r-lg shadow-md transition-all duration-300 group-hover:brightness-110"
-            :class="{
-              'bg-gradient-to-r from-yellow-400 to-orange-500': index === 0,
-              'bg-gradient-to-r from-gray-300 to-gray-500': index === 1,
-              'bg-gradient-to-r from-amber-500 to-orange-700': index === 2,
-              'bg-black/70': index > 2,
-            }"
-          >
-            TOP {{ index + 1 }}
-          </div>
-
-          <CardM
-            :movie="movie"
-            :class="[
-              'relative z-20 aspect-[2/3] rounded-xl overflow-hidden flex-shrink-0 ',
-              'transition-all duration-300',
-              'shadow-md hover:shadow-2xl ',
-              index < 3 && 'ring-2 ring-yellow-400/50',
-              cardClass,
-            ]"
-          />
+  <HorizontalScroller ref="scrollerRef" >
+    <div class="flex gap-2 sm:gap-2 py-4 px-2">
+      <div
+        v-for="(movie, index) in movies"
+        :key="movie.id"
+        class="relative cursor-pointer transition-transform duration-300 flex-shrink-0"
+        @click="$emit('open', movie.id)"
+      >
+        <!-- Ribbon -->
+        <div
+          class="absolute left-0 top-3 z-30 px-3 py-1 text-xs font-bold text-white rounded-r-lg shadow-md transition-all duration-300 group-hover:brightness-110"
+          :class="{
+            'bg-gradient-to-r from-yellow-400 to-orange-500': index === 0,
+            'bg-gradient-to-r from-gray-300 to-gray-500': index === 1,
+            'bg-gradient-to-r from-amber-500 to-orange-700': index === 2,
+            'bg-black/70': index > 2,
+          }"
+        >
+          TOP {{ index + 1 }}
         </div>
+
+        <CardM
+          :movie="movie"
+          :class="[
+            'relative z-20 aspect-[2/3] rounded-xl overflow-hidden flex-shrink-0 ',
+            'transition-all duration-300',
+            'shadow-md hover:shadow-2xl ',
+            index < 3 && 'ring-2 ring-yellow-400/50',
+            cardClass,
+          ]"
+        />
       </div>
+    </div>
   </HorizontalScroller>
 </template>
 <script setup lang="ts">
@@ -41,11 +41,11 @@ import { $fetch } from "ofetch";
 const props = withDefaults(
   defineProps<{
     size?: "xs" | "sm" | "md" | "lg";
-    sortMode?: "popular" | "rating";
+    sortMode?: "default" | "popular" | "rating";
   }>(),
   {
     size: "md",
-    sortMode: "popular",
+    sortMode: "default",
   },
 );
 
@@ -76,15 +76,23 @@ const recommend = async () => {
 };
 
 const movies = computed(() => {
+  const list = [...moviesRaw.value];
+
   if (props.sortMode === "rating") {
-    return [...moviesRaw.value].sort(
-      (a, b) => (b._score || 0) - (a._score || 0),
+    return list.sort(
+      (a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0)
     );
   }
 
-  // popular (default)
-  return [...moviesRaw.value].sort(
-    (a, b) => (b.popularity || 0) - (a.popularity || 0),
+  if (props.sortMode === "popular") {
+    return list.sort(
+      (a, b) => (b.popularity ?? 0) - (a.popularity ?? 0)
+    );
+  }
+
+  // ✅ default → ใช้ recommendation score
+  return list.sort(
+    (a, b) => (b._score ?? 0) - (a._score ?? 0)
   );
 });
 
@@ -101,7 +109,7 @@ const cardClass = computed(() => {
     case "lg":
       return "w-44 sm:w-52";
     default: // md
-      return "w-34 sm:w-40";
+      return "w-32 sm:w-40";
   }
 });
 
@@ -111,7 +119,7 @@ watch(
   () => props.sortMode,
   () => {
     scrollerRef.value?.scrollToStart();
-  }
+  },
 );
 
 onMounted(() => {

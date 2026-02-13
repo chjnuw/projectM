@@ -7,9 +7,9 @@
     </div>
 
     <div class="w-full h-auto text-black p-2 rounded-b-2xl text-left ">
-      <p class="text-lg font-bold">{{ name }}</p>
-      <p class="text-sm opacity-80">{{ gender }}</p>
-      <p class="text-sm text-gray-600">{{ department }}</p>
+      <p class="text-sm md:text-lg font-bold">{{ name }}</p>
+      <p class="text-xs md:text-sm opacity-80">{{ gender }}</p>
+      <p class="text-xs md:text-sm text-gray-600">{{ department }}</p>
     </div>
   </div>
 </template>

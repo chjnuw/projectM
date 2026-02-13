@@ -38,6 +38,7 @@ const breadcrumbMap: Record<
   profile: { label: "โปรไฟล์" },
   seemore: { label: "ดูเพิ่มเติม" },
   search: { label: "ค้นหา" },
+  randomscreen:{ label: "สุ่มภาพยนตร์"},
 
   movie: {
     label: "ภาพยนตร์",

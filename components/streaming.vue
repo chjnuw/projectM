@@ -3,7 +3,7 @@
     <p class="font-bold text-xl mb-2 text-white">บริการสตรีมมิ่ง</p>
 
     <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 p-2 mx-auto"
+      class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 p-2 mx-auto"
     >
       <button
         v-for="prov in providers"

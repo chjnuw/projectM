@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full grid grid-cols-[auto_1fr_auto] items-center gap-3">
+  <div class="w-full grid grid-cols-[auto_1fr_auto] items-center gap-3 ">
     <!-- Left -->
     <button
-      class="w-10 h-10 rounded-md bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center transition disabled:opacity-30"
+      class="w-10 h-10 rounded-md bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center transition disabled:opacity-30 hidden md:block"
       @click="scrollLeft"
       :disabled="!canScrollLeft"
     >
@@ -20,7 +20,7 @@
 
     <!-- Right -->
     <button
-      class="w-10 h-10 rounded-md bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center transition disabled:opacity-30"
+      class="w-10 h-10 rounded-md bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center transition disabled:opacity-30 hidden md:block"
       @click="scrollRight"
       :disabled="!canScrollRight"
     >

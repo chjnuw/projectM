@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center px-4"
+    class="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center px-4"
   >
     <!-- กล่องหลัก -->
     <div class="relative w-full max-w-[380px] text-white">

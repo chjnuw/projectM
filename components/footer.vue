@@ -23,7 +23,7 @@
     <div class="max-w-7xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-3">
       <!-- Brand -->
       <div
-        class="justify-center items-center flex flex-col border-r border-gray-800 md:pr-6"
+        class="justify-center items-center flex flex-col border-b md:border-b-0 md:border-r border-gray-800 pb-6 md:pr-6"
       >
         <img
           src="/img/logo.png"
@@ -47,7 +47,7 @@
 
       <!-- Links -->
       <div
-        class="border-r border-gray-800 md:pr-6 justify-center flex flex-col"
+        class="border-b md:border-b-0 md:border-r border-gray-800 pb-6 md:pr-6 justify-center flex flex-col"
       >
         <h3 class="text-white font-semibold mb-3">สำรวจ</h3>
         <ul class="space-y-2 text-sm">
