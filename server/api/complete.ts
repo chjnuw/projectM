@@ -27,11 +27,30 @@ export default defineEventHandler(async (event) => {
     const [res]: any = await db.query(
       `INSERT INTO \`user\`
        (username, email, password, gender, birthdate, age, role, status)
-       VALUES (?, ?, ?, ?, ?, ?, 'user')`,
-      [u.username, u.email, u.password, u.gender, u.birthdate, u.age, 1],
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        u.username,
+        u.email,
+        u.password,
+        u.gender,
+        u.birthdate,
+        u.age,
+        "user",
+        1,
+      ],
     );
 
     console.log("INSERT USER OK");
+    console.log("INSERTING:", [
+      u.username,
+      u.email,
+      u.password,
+      u.gender,
+      u.birthdate,
+      u.age,
+      "user",
+      1,
+    ]);
 
     return { ok: true };
   } catch (error: any) {
