@@ -8,43 +8,46 @@
     <img
       src="/img/logo.png"
       alt="logo"
-      class="absolute top-4 left-4 z-20 w-[120px] sm:w-[180px] md:w-[240px] lg:w-[300px] drop-shadow-2xl"
+      class="absolute top-4 left-4 z-20 w-[120px] sm:w-[180px] md:w-[240px] lg:w-[300px] drop-shadow-2xl hidden md:flex"
     />
 
     <div
-      class="relative z-10 w-[700px] bg-white/45 backdrop-blur-md rounded-[70px] shadow-2xl p-8"
+      class="relative z-10 w-full max-w-md mx-4 bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8"
     >
       <div class="w-full h-full flex flex-col items-center gap-4">
-        <h1 class="text-4xl font-bold text-[#ffffff] text-shadow-2xl">
+        <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 text-center">
           สมัครสมาชิก
         </h1>
-        <h2 class="text-lg text-[#ffffff]">
+
+        <h2 class="text-sm sm:text-base text-gray-700 text-center">
           สมัครสมาชิกเพื่อเริ่มต้นการเดินทางในโลกภาพยนตร์ของคุณ!
         </h2>
         <!-- =================== ชื่อผู้ใช้ =================== -->
-        <div class="flex flex-col">
+        <div class="flex flex-col w-full">
           <div
-            class="w-[500px] h-[50px] flex items-center bg-white/50 backdrop-blur-md border border-gray-300 rounded-4xl px-3"
+            class="w-full h-[48px] flex items-center bg-white rounded-full px-4 shadow-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 512 512"
-              class="ml-2.5 text-[#737373]"
-            >
-              <path
-                fill="currentColor"
-                d="M256 42.667A213.333 213.333 0 0 1 469.334 256c0 117.821-95.513 213.334-213.334 213.334c-117.82 0-213.333-95.513-213.333-213.334C42.667 138.18 138.18 42.667 256 42.667m21.334 234.667h-42.667c-52.815 0-98.158 31.987-117.715 77.648c30.944 43.391 81.692 71.685 139.048 71.685s108.104-28.294 139.049-71.688c-19.557-45.658-64.9-77.645-117.715-77.645M256 106.667c-35.346 0-64 28.654-64 64s28.654 64 64 64s64-28.654 64-64s-28.653-64-64-64"
-              />
-            </svg>
+            <div class="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 512 512"
+                class="ml-2.5 text-[#737373]"
+              >
+                <path
+                  fill="currentColor"
+                  d="M256 42.667A213.333 213.333 0 0 1 469.334 256c0 117.821-95.513 213.334-213.334 213.334c-117.82 0-213.333-95.513-213.333-213.334C42.667 138.18 138.18 42.667 256 42.667m21.334 234.667h-42.667c-52.815 0-98.158 31.987-117.715 77.648c30.944 43.391 81.692 71.685 139.048 71.685s108.104-28.294 139.049-71.688c-19.557-45.658-64.9-77.645-117.715-77.645M256 106.667c-35.346 0-64 28.654-64 64s28.654 64 64 64s64-28.654 64-64s-28.653-64-64-64"
+                />
+              </svg>
 
-            <input
-              type="text"
-              placeholder="ชื่อผู้ใช้"
-              v-model="form.name"
-              class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl"
-            />
+              <input
+                type="text"
+                placeholder="ชื่อผู้ใช้"
+                v-model="form.name"
+                class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl"
+              />
+            </div>
           </div>
           <p
             v-if="errors.name"
@@ -54,74 +57,90 @@
           </p>
         </div>
         <!-- =================== อีเมล =================== -->
-        <div class="flex flex-col">
+        <div class="flex flex-col w-full">
           <div
-            class="w-[500px] h-[50px] flex items-center bg-white/50 backdrop-blur-md border border-gray-300 rounded-4xl px-3"
+            class="w-full h-[48px] flex items-center bg-white rounded-full px-4 shadow-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 20 20"
-              class="ml-2.5 text-[#737373]"
-            >
-              <path
-                fill="currentColor"
-                d="m7.172 11.334l2.83 1.935l2.728-1.882l6.115 6.033q-.242.079-.512.08H1.667c-.22 0-.43-.043-.623-.12zM20 6.376v9.457c0 .247-.054.481-.15.692l-5.994-5.914zM0 6.429l6.042 4.132l-5.936 5.858A1.7 1.7 0 0 1 0 15.833zM18.333 2.5c.92 0 1.667.746 1.667 1.667v.586L9.998 11.648L0 4.81v-.643C0 3.247.746 2.5 1.667 2.5z"
-              />
-            </svg>
+            <div class="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 20 20"
+                class="ml-2.5 text-[#737373]"
+              >
+                <path
+                  fill="currentColor"
+                  d="m7.172 11.334l2.83 1.935l2.728-1.882l6.115 6.033q-.242.079-.512.08H1.667c-.22 0-.43-.043-.623-.12zM20 6.376v9.457c0 .247-.054.481-.15.692l-5.994-5.914zM0 6.429l6.042 4.132l-5.936 5.858A1.7 1.7 0 0 1 0 15.833zM18.333 2.5c.92 0 1.667.746 1.667 1.667v.586L9.998 11.648L0 4.81v-.643C0 3.247.746 2.5 1.667 2.5z"
+                />
+              </svg>
 
-            <input
-              type="text"
-              placeholder="อีเมล"
-              v-model="form.email"
-              class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl"
-            />
+              <input
+                type="text"
+                placeholder="อีเมล"
+                v-model="form.email"
+                class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl"
+              />
+            </div>
           </div>
           <p v-if="errors.email" class="text-red-600 text-xs mt-0.5 ml-6">
             {{ errors.email }}
           </p>
         </div>
         <!-- =================== เพศ =================== -->
-        <div class="flex flex-col">
-          <div class="flex text-white w-[500px] gap-[100px] ml-6">
-            <label class="flex items-center gap-2 font-bold">
-              <input
-                type="radio"
-                value="1"
-                v-model="form.gender"
-                class="accent-[#90CB38] w-5 h-5"
-              />
+        <div class="flex flex-col w-full">
+          <div class="flex justify-between text-gray-700 text-sm">
+            <label class="flex items-center gap-2">
+              <input type="radio" value="1" v-model="form.gender" />
               ชาย
             </label>
-            <label class="flex items-center gap-2 font-bold">
-              <input
-                type="radio"
-                value="2"
-                v-model="form.gender"
-                class="accent-[#90CB38] w-5 h-5"
-              />
+
+            <label class="flex items-center gap-2">
+              <input type="radio" value="2" v-model="form.gender" />
               หญิง
             </label>
-            <label class="flex items-center gap-2 font-bold">
-              <input
-                type="radio"
-                value="3"
-                v-model="form.gender"
-                class="accent-[#90CB38] w-5 h-5"
-              />
+
+            <label class="flex items-center gap-2">
+              <input type="radio" value="3" v-model="form.gender" />
               อื่นๆ
             </label>
           </div>
-          <p v-if="errors.gender" class="text-red-600 text-xs mt-0.5 ml-6">
-            {{ errors.gender }}
-          </p>
         </div>
         <!-- วันเดือนปีเกิด -->
-        <div class="flex flex-col">
+        <div class="flex flex-col w-full">
           <div
-            class="w-[500px] h-[50px] flex items-center bg-white/50 backdrop-blur-md border border-gray-300 rounded-4xl px-3"
+            class="w-full h-[48px] flex items-center bg-white rounded-full px-4 shadow-sm"
           >
+            <div class="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                class="ml-2.5 text-[#737373]"
+              >
+                <path
+                  fill="currentColor"
+                  d="M7 10h5v5H7zm7 0h3v5h-3zM7 3v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2V3h-2v2H9V3zm12 16H5V9h14z"
+                />
+              </svg>
+              <input
+                ref="birthInput"
+                type="text"
+                placeholder="วันเดือนปีเกิด"
+                class="flex-1 p-3 bg-transparent font-bold focus:outline-none text-[#737373]"
+              />
+            </div>
+          </div>
+          <p v-if="errors.birthdate" class="text-red-600 text-xs mt-0.5 ml-6">
+            {{ errors.birthdate }}
+          </p>
+        </div>
+        <!-- อายุ  -->
+        <div
+          class="w-full h-[48px] flex items-center bg-white rounded-full px-4 opacity-80 shadow-sm"
+        >
+          <div class="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="22"
@@ -131,50 +150,24 @@
             >
               <path
                 fill="currentColor"
-                d="M7 10h5v5H7zm7 0h3v5h-3zM7 3v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2V3h-2v2H9V3zm12 16H5V9h14z"
+                d="M12 2a10 10 0 1 0 10 10A10.01
+         10.01 0 0 0 12 2m1 15h-2v-6h2zm0-8h-2V7h2z"
               />
             </svg>
+
             <input
-              ref="birthInput"
               type="text"
-              placeholder="วันเดือนปีเกิด"
-              class="flex-1 p-3 bg-transparent font-bold focus:outline-none text-[#737373]"
+              :value="age ? `${age} ปี` : ''"
+              disabled
+              placeholder="อายุ"
+              class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl cursor-not-allowed"
             />
           </div>
-          <p v-if="errors.birthdate" class="text-red-600 text-xs mt-0.5 ml-6">
-            {{ errors.birthdate }}
-          </p>
-        </div>
-        <!-- อายุ  -->
-        <div
-          class="w-[500px] h-[50px] flex items-center bg-white/40 backdrop-blur-md border border-gray-300 rounded-4xl px-3 opacity-80"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            class="ml-2.5 text-[#737373]"
-          >
-            <path
-              fill="currentColor"
-              d="M12 2a10 10 0 1 0 10 10A10.01
-         10.01 0 0 0 12 2m1 15h-2v-6h2zm0-8h-2V7h2z"
-            />
-          </svg>
-
-          <input
-            type="text"
-            :value="age ? `${age} ปี` : ''"
-            disabled
-            placeholder="อายุ"
-            class="flex-1 p-3 bg-transparent focus:outline-none text-black font-extrabold text-shadow-2xl cursor-not-allowed"
-          />
         </div>
         <!-- =================== รหัสผ่าน =================== -->
-        <div class="flex flex-col">
+        <div class="flex flex-col w-full">
           <div
-            class="w-[500px] h-[50px] flex items-center bg-white/55 backdrop-blur-md border border-gray-300 rounded-4xl px-3 text-[#ffffff] font-extrabold text-shadow-2xl justify-between"
+            class="w-full h-[48px] flex items-center bg-white rounded-full px-4 shadow-sm relative"
           >
             <!-- ซ้าย: ไอคอน + Password -->
             <div class="flex items-center gap-2">
@@ -195,12 +188,15 @@
                 :type="showPassword ? 'text' : 'password'"
                 placeholder="รหัสผ่าน"
                 v-model="form.password"
-                class="bg-transparent focus:outline-none text-black font-bold"
+                class="flex-1 bg-transparent focus:outline-none text-black font-bold"
               />
             </div>
 
             <!-- ไอคอนตา -->
-            <div @click="togglePassword" class="cursor-pointer">
+            <div
+              @click="togglePassword"
+              class="cursor-pointer absolute right-2"
+            >
               <!-- ถ้า show อยู่ → ไอคอนตาเปิด -->
               <svg
                 v-if="showPassword"
@@ -244,7 +240,7 @@
         <button
           type="button"
           :disabled="loading || !acceptTerms"
-          class="w-[500px] h-[45px] bg-[#A0E13E] hover:bg-[#78aa2d] text-white rounded-[70px] font-bold shadow-2xl cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full h-[48px] bg-[#A0E13E] hover:bg-[#78aa2d] text-white rounded-full font-bold shadow-lg disabled:opacity-50"
           @click="gototag"
         >
           {{ loading ? "กำลังโหลด..." : "ถัดไป" }}
@@ -263,7 +259,7 @@
               ฉันยอมรับ
               <button
                 type="button"
-                class="text-[#A0E13E] cursor-pointer hover:text-[#91cd38] underline ml-1"
+                class="text-[#A0E13E] font-semibold hover:text-[#78aa2d] cursor-pointer underline ml-1"
                 @click="showPolicy = true"
               >
                 นโยบายความเป็นส่วนตัว
@@ -276,13 +272,18 @@
           </p>
         </div>
 
-        <div class="flex gap-4">
-          <p class="text-[#ffffff] text-shadow-2xl">มีบัญชีอยู่แล้วใช่ไหม?</p>
-          <span
-            class="text-[#A0E13E] cursor-pointer hover:text-[#91cd38]"
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 mt-4 text-center"
+        >
+          <p class="text-xs sm:text-sm text-gray-800">มีบัญชีอยู่แล้วใช่ไหม?</p>
+
+          <button
+            type="button"
+            class="text-[#A0E13E] font-semibold hover:text-[#78aa2d] transition"
             @click="gotoLogin"
-            >เข้าสู่ระบบ</span
           >
+            เข้าสู่ระบบ
+          </button>
         </div>
       </div>
     </div>
@@ -483,39 +484,38 @@ const togglePassword = () => {
 const loading = ref(false);
 const errorMsg = ref("");
 const gototag = async () => {
-  
-  if (loading.value) return
+  if (loading.value) return;
 
-  if (!validateForm()) return
+  if (!validateForm()) return;
 
-  loading.value = true
+  loading.value = true;
 
   try {
     const res = await $fetch("/api/register", {
       method: "POST",
       body: form.value,
-    })
+    });
 
     if (!res.ok) {
       // 👇 map error กลับไปที่ field
       if (res.field && errors.value[res.field] !== undefined) {
-        errors.value[res.field] = res.message
+        errors.value[res.field] = res.message;
       } else {
-        alert(res.message || "Register failed")
+        alert(res.message || "Register failed");
       }
-      return
+      return;
     }
 
     if (res.ok && res.userId !== undefined) {
-      navigateTo(`/verify-email?email=${form.value.email}`)
+      navigateTo(`/verify-email?email=${form.value.email}`);
     }
   } catch (err) {
-    console.error(err)
-    alert("API error")
+    console.error(err);
+    alert("API error");
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 const gotoLogin = () => {
   navigateTo("/logInscreen");
 };

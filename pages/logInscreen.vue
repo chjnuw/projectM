@@ -9,7 +9,7 @@
     <img
       src="/img/logo.png"
       alt="logo"
-      class="absolute top-4 left-4 sm:top-6 sm:left-6 w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] lg:w-[140px] lg:h-[140px] z-20 shadow-2xl"
+      class="absolute top-4 left-4 w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] lg:w-[140px] lg:h-[140px] z-20"
     />
 
     <!-- center wrapper -->
@@ -18,7 +18,7 @@
     >
       <!-- card -->
       <div
-        class="w-full max-w-[380px] sm:max-w-[450px] lg:max-w-[700px] bg-white/45 backdrop-blur-md rounded-[28px] sm:rounded-[40px] lg:rounded-[70px] shadow-2xl p-5 sm:p-8"
+        class="w-full max-w-[380px] sm:max-w-[450px] lg:max-w-[700px] bg-white/45 backdrop-blur-md rounded-3xl sm:rounded-[40px] lg:rounded-[70px] shadow-2xl p-4 sm:p-8"
       >
         <div class="w-full flex flex-col items-center gap-4">
           <!-- title -->
@@ -33,41 +33,43 @@
 
           <!-- email -->
           <div
-            class="w-full h-[48px] flex items-center bg-white/50 border border-gray-300 rounded-full px-3"
+            class="w-full h-[48px] flex items-center bg-white/55 border border-gray-300 rounded-full px-3"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 20 20"
-              class="ml-2.5 text-[#737373]"
-            >
-              <path
-                fill="currentColor"
-                fill-rule="evenodd"
-                d="m7.172 11.334l2.83 1.935l2.728-1.882l6.115 6.033q-.242.079-.512.08H1.667c-.22 0-.43-.043-.623-.12zM20 6.376v9.457c0 .247-.054.481-.15.692l-5.994-5.914zM0 6.429l6.042 4.132l-5.936 5.858A1.7 1.7 0 0 1 0 15.833zM18.333 2.5c.92 0 1.667.746 1.667 1.667v.586L9.998 11.648L0 4.81v-.643C0 3.247.746 2.5 1.667 2.5z"
-              />
-            </svg>
+            <div class="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 20 20"
+                class="ml-2.5 text-[#737373] "
+              >
+                <path
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  d="m7.172 11.334l2.83 1.935l2.728-1.882l6.115 6.033q-.242.079-.512.08H1.667c-.22 0-.43-.043-.623-.12zM20 6.376v9.457c0 .247-.054.481-.15.692l-5.994-5.914zM0 6.429l6.042 4.132l-5.936 5.858A1.7 1.7 0 0 1 0 15.833zM18.333 2.5c.92 0 1.667.746 1.667 1.667v.586L9.998 11.648L0 4.81v-.643C0 3.247.746 2.5 1.667 2.5z"
+                />
+              </svg>
 
-            <input
-              type="text"
-              placeholder="อีเมล"
-              v-model="form.email"
-              class="flex-1 p-3 bg-transparent focus:outline-none text-black font-bold"
-            />
+              <input
+                type="text"
+                placeholder="อีเมล"
+                v-model="form.email"
+                class="flex-1 p-3 bg-transparent focus:outline-none text-black font-bold px-2 md:px-4"
+              />
+            </div>
           </div>
 
           <!-- password -->
           <div
             class="w-full h-[48px] flex items-center bg-white/55 border border-gray-300 rounded-full px-3 justify-between"
           >
-            <div class="flex items-center gap-2 flex-1">
+            <div class="flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
                 viewBox="0 0 256 256"
-                class="text-[#737373] ml-2.5"
+                class="text-[#737373] ml-2.5 "
               >
                 <path
                   fill="currentColor"
@@ -78,10 +80,10 @@
                 :type="showPassword ? 'text' : 'password'"
                 placeholder="รหัสผ่าน"
                 v-model="form.password"
-                class="w-full bg-transparent focus:outline-none text-black font-bold"
+                class="w-full bg-transparent focus:outline-none text-black font-bold px-2 md:px-4"
               />
             </div>
-<!-- ไอคอนตา -->
+            <!-- ไอคอนตา -->
             <div @click="togglePassword" class="cursor-pointer">
               <!-- ถ้า show อยู่ → ไอคอนตาเปิด -->
               <svg
@@ -117,9 +119,11 @@
                   d="M491 273.36a32.2 32.2 0 0 0-.1-34.76c-26.46-40.92-60.79-75.68-99.27-100.53C349 110.55 302 96 255.68 96a226.5 226.5 0 0 0-71.82 11.79a4 4 0 0 0-1.56 6.63l47.24 47.24a4 4 0 0 0 3.82 1.05a96 96 0 0 1 116 116a4 4 0 0 0 1.05 3.81l67.95 68a4 4 0 0 0 5.4.24a343.8 343.8 0 0 0 67.24-77.4M256 352a96 96 0 0 1-93.3-118.63a4 4 0 0 0-1.05-3.81l-66.84-66.87a4 4 0 0 0-5.41-.23c-24.39 20.81-47 46.13-67.67 75.72a31.92 31.92 0 0 0-.64 35.54c26.41 41.33 60.39 76.14 98.28 100.65C162.06 402 207.92 416 255.68 416a238.2 238.2 0 0 0 72.64-11.55a4 4 0 0 0 1.61-6.64l-47.47-47.46a4 4 0 0 0-3.81-1.05A96 96 0 0 1 256 352"
                 />
               </svg>
- </div>
+            </div>
           </div>
-          <div class="flex justify-between items-center w-[500px]">
+          <div
+            class="flex justify-between items-center w-full text-xs sm:text-sm"
+          >
             <label class="flex items-center gap-2 cursor-pointer select-none">
               <input type="checkbox" v-model="checked" class="peer hidden" />
             </label>
@@ -157,29 +161,26 @@
   </div>
 
   <Teleport to="body">
-  <div
-    v-if="loading"
-    class="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]"
-  >
     <div
-      class="bg-white/90 backdrop-blur-md rounded-2xl px-10 py-8 flex flex-col items-center gap-4 shadow-2xl"
+      v-if="loading"
+      class="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]"
     >
       <div
-        class="w-12 h-12 border-4 border-[#A0E13E] border-t-transparent rounded-full animate-spin"
-      ></div>
+        class="bg-white/90 backdrop-blur-md rounded-2xl px-10 py-8 flex flex-col items-center gap-4 shadow-2xl"
+      >
+        <div
+          class="w-12 h-12 border-4 border-[#A0E13E] border-t-transparent rounded-full animate-spin"
+        ></div>
 
-      <p class="text-lg font-bold text-gray-700">
-        กำลังเข้าสู่ระบบ...
-      </p>
+        <p class="text-lg font-bold text-gray-700">กำลังเข้าสู่ระบบ...</p>
+      </div>
     </div>
-  </div>
-</Teleport>
-
+  </Teleport>
 </template>
 
 <script setup>
 definePageMeta({
-  layout: "guest"
+  layout: "guest",
 });
 import { ref, nextTick } from "vue";
 
@@ -189,7 +190,6 @@ const checked = ref(true);
 const showPassword = ref(false);
 const errorMsg = ref("");
 const usernameError = ref("");
-
 
 // 🔹 ฟอร์มล็อกอิน
 const form = ref({
@@ -219,7 +219,7 @@ const handleToHomepage = async () => {
   }
 
   loading.value = true;
-  await nextTick(); 
+  await nextTick();
 
   try {
     const res = await $fetch("/api/login", {
@@ -239,7 +239,6 @@ const handleToHomepage = async () => {
     loading.value = false;
   }
 };
-
 </script>
 
 <style></style>
