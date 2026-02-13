@@ -1,50 +1,44 @@
-import { db } from '~/server/db'
+import { db } from "~/server/db";
 
 export default defineEventHandler(async (event) => {
-  const { userId, tags } = await readBody(event)
+  try {
+    const body = await readBody(event);
+    console.log("BODY:", body);
 
-  if (!userId || !Array.isArray(tags) || tags.length !== 3) {
-    return { ok: false }
+    const userId = Number(body.userId);
+    const tags = body.tags;
+
+    const [temp]: any = await db.query(
+      "SELECT * FROM user_register_temp WHERE id = ?",
+      [userId],
+    );
+
+    if (!temp || temp.length === 0) {
+      return {
+        ok: false,
+        message: "User temp not found",
+      };
+    }
+
+    console.log("TEMP:", temp);
+
+    const u = temp[0];
+
+    const [res]: any = await db.query(
+      `INSERT INTO \`user\`
+       (username, email, password, gender, birthdate, age, role, status)
+       VALUES (?, ?, ?, ?, ?, ?, 'user')`,
+      [u.username, u.email, u.password, u.gender, u.birthdate, u.age, 1],
+    );
+
+    console.log("INSERT USER OK");
+
+    return { ok: true };
+  } catch (error: any) {
+    console.error("🔥 COMPLETE ERROR:", error);
+    return {
+      ok: false,
+      message: error.message,
+    };
   }
-
-  const [temp]: any = await db.query(
-    'SELECT * FROM user_register_temp WHERE id = ?',
-    [userId]
-  )
-
-  if (temp.length === 0) {
-    return { ok: false }
-  }
-
-  const u = temp[0]
-
-  const [res]: any = await db.query(
-    `INSERT INTO user
-     (username, email, password, gender, birthdate, age, role)
-     VALUES (?, ?, ?, ?, ?, ?, 'user')`,
-    [
-      u.username,
-      u.email,
-      u.password,
-      u.gender,
-      u.birthdate,
-      u.age
-    ]
-  )
-
-  const newUserId = res.insertId
-
-  for (const tagId of tags) {
-    await db.query(
-      'INSERT INTO user_tags (user_id, tag_id) VALUES (?, ?)',
-      [newUserId, tagId]
-    )
-  }
-
-  await db.query(
-    'DELETE FROM user_register_temp WHERE id = ?',
-    [userId]
-  )
-
-  return { ok: true }
-})
+});

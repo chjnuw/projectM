@@ -33,7 +33,7 @@
 
           <!-- email -->
           <div
-            class="w-full h-[48px] flex items-center bg-white/55 border border-gray-300 rounded-full px-3"
+            class="w-full  h-[48px] flex items-center bg-white/55 border border-gray-300 rounded-full px-3"
           >
             <div class="flex items-center">
               <svg
