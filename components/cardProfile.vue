@@ -233,7 +233,7 @@ const toggleEdit = async () => {
   isEditing.value = false;
   previewImage.value = null;
   selectedFile.value = null;
-  window.location.reload();
+  await refresh();
 };
 
 const cancelEdit = () => {
