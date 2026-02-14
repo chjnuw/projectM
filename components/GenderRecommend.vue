@@ -30,7 +30,7 @@ const props = withDefaults(
   defineProps<{
     endpoint: string; // ⭐ API ที่จะเรียก
     size?: "xs" | "sm" | "md" | "lg";
-    genderSortMode ?: "default" | "popular" | "rating";
+    genderSortMode ?: "default" | "rating";
   }>(),
   {
     size: "md",
@@ -83,12 +83,6 @@ const movies = computed(() => {
   if (props.genderSortMode === "rating") {
     return list.sort(
       (a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0)
-    );
-  }
-
-  if (props.genderSortMode === "popular") {
-    return list.sort(
-      (a, b) => (b.popularity ?? 0) - (a.popularity ?? 0)
     );
   }
 

@@ -41,7 +41,7 @@ import { $fetch } from "ofetch";
 const props = withDefaults(
   defineProps<{
     size?: "xs" | "sm" | "md" | "lg";
-    sortMode?: "default" | "popular" | "rating";
+    sortMode?: "default"| "rating";
   }>(),
   {
     size: "md",
@@ -81,12 +81,6 @@ const movies = computed(() => {
   if (props.sortMode === "rating") {
     return list.sort(
       (a, b) => (b.vote_average ?? 0) - (a.vote_average ?? 0)
-    );
-  }
-
-  if (props.sortMode === "popular") {
-    return list.sort(
-      (a, b) => (b.popularity ?? 0) - (a.popularity ?? 0)
     );
   }
 

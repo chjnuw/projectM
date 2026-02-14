@@ -74,18 +74,6 @@
                 </button>
 
                 <button
-                  @click="sortMode = 'popular'"
-                  :class="[
-                    'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                    sortMode === 'popular'
-                      ? 'bg-green-600 text-white shadow'
-                      : 'text-gray-400 hover:text-white cursor-pointer',
-                  ]"
-                >
-                  นิยม
-                </button>
-
-                <button
                   @click="sortMode = 'rating'"
                   :class="[
                     'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
@@ -149,18 +137,6 @@
               </button>
 
               <button
-                @click="genderSortMode = 'popular'"
-                :class="[
-                  'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  genderSortMode === 'popular'
-                    ? 'bg-green-600 text-white shadow'
-                    : 'text-gray-400 hover:text-white cursor-pointer',
-                ]"
-              >
-                นิยม
-              </button>
-
-              <button
                 @click="genderSortMode = 'rating'"
                 :class="[
                   'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
@@ -212,18 +188,6 @@
               </button>
 
               <button
-                @click="genderSortMode = 'popular'"
-                :class="[
-                  'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  genderSortMode === 'popular'
-                    ? 'bg-green-600 text-white shadow'
-                    : 'text-gray-400 hover:text-white cursor-pointer',
-                ]"
-              >
-                นิยม
-              </button>
-
-              <button
                 @click="genderSortMode = 'rating'"
                 :class="[
                   'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
@@ -272,18 +236,6 @@
                 ]"
               >
                 แนะนำ
-              </button>
-
-              <button
-                @click="genderSortMode = 'popular'"
-                :class="[
-                  'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  genderSortMode === 'popular'
-                    ? 'bg-green-600 text-white shadow'
-                    : 'text-gray-400 hover:text-white cursor-pointer',
-                ]"
-              >
-                นิยม
               </button>
 
               <button
@@ -430,8 +382,8 @@ const syncUserTags = (updatedTags: UserTag[]) => {
   userTags.value = updatedTags;
 };
 
-const sortMode = ref<"default" | "popular" | "rating">("default");
-const genderSortMode = ref<"default" | "popular" | "rating">("default");
+const sortMode = ref<"default" | "rating">("default");
+const genderSortMode = ref<"default" | "rating">("default");
 
 const tagChangeMessage = ref("");
 let timeout: any = null;
