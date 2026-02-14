@@ -233,7 +233,7 @@ const toggleEdit = async () => {
   isEditing.value = false;
   previewImage.value = null;
   selectedFile.value = null;
-  await refresh();
+  await navigateTo('/profile');
 };
 
 const cancelEdit = () => {
