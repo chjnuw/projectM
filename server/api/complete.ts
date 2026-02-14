@@ -24,6 +24,12 @@ export default defineEventHandler(async (event) => {
 
     const u = temp[0];
 
+    console.log("DEBUG VALUES:", {
+      gender: u.gender,
+      birthdate: u.birthdate,
+      age: u.age,
+    });
+
     const [res]: any = await db.query(
       `INSERT INTO \`user\`
        (username, email, password, gender, birthdate, age, role, status)
