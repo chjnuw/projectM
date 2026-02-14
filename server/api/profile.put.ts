@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     if (image instanceof Blob) {
       const buffer = Buffer.from(await image.arrayBuffer())
 
-      const uploadDir = 'public/uploads'
+      const uploadDir = '/tmp'
       if (!existsSync(uploadDir)) {
         await mkdir(uploadDir, { recursive: true })
       }
