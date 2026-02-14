@@ -150,7 +150,7 @@ const userData = ref({
 const user = useUser();
 
 /* ---------- fetch profile ---------- */
-const { data: profile } = await useFetch("/api/profile", {
+const { data: profile, refresh } = await useFetch("/api/profile", {
   server: false,
   credentials: "include",
 });
@@ -203,19 +203,16 @@ const toggleTag = (tagId) => {
 
 /* ---------- Edit / Confirm ---------- */
 const toggleEdit = async () => {
-  // เข้าโหมดแก้ไข
   if (!isEditing.value) {
     originalData.value = {
       username: userData.value.username,
       tags: [...selectedTags.value],
       image: userData.value.image,
     };
-
     isEditing.value = true;
     return;
   }
 
-  // กดยืนยัน
   const formData = new FormData();
   formData.append("username", userData.value.username);
   formData.append("tags", JSON.stringify(selectedTags.value));
@@ -224,16 +221,22 @@ const toggleEdit = async () => {
     formData.append("image", selectedFile.value);
   }
 
-  await $fetch("/api/profile", {
-    method: "PUT",
-    body: formData,
-    credentials: "include",
-  });
+  try {
+    const updatedProfile = await $fetch("/api/profile", {
+      method: "PUT",
+      body: formData,
+      credentials: "include",
+    });
 
-  isEditing.value = false;
-  previewImage.value = null;
-  selectedFile.value = null;
-  await navigateTo('/profile');
+    await refresh();
+
+    isEditing.value = false;
+    previewImage.value = null;
+    selectedFile.value = null;
+  } catch (err) {
+    console.error(err);
+    alert("อัปเดตไม่สำเร็จ");
+  }
 };
 
 const cancelEdit = () => {

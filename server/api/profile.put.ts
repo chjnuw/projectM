@@ -11,7 +11,6 @@ cloudinary.config({
 
 export default defineEventHandler(async (event) => {
   try {
-    // 🔐 check login
     const userId = getCookie(event, "user_id");
     if (!userId) {
       throw createError({
@@ -20,7 +19,6 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // 📦 read multipart form data
     const formData = await readFormData(event);
 
     const username = formData.get("username");
@@ -34,17 +32,17 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // 🏷 parse tags
-    const tags: number[] = tagsRaw ? JSON.parse(tagsRaw.toString()) : [];
+    const tags: number[] = tagsRaw
+      ? JSON.parse(tagsRaw.toString())
+      : [];
 
-    /* ---------- update username ---------- */
+    // update username
     await db.query("UPDATE user SET username = ? WHERE id = ?", [
       username,
       userId,
     ]);
 
-    /* ---------- update image ---------- */
-    // image type = string | Blob
+    // update image
     if (image instanceof Blob) {
       const buffer = Buffer.from(await image.arrayBuffer());
 
@@ -56,32 +54,46 @@ export default defineEventHandler(async (event) => {
               resolve(result);
             })
             .end(buffer);
-        },
+        }
       );
 
-      const imageUrl = uploadResult.secure_url;
-
       await db.query("UPDATE user SET image = ? WHERE id = ?", [
-        imageUrl,
+        uploadResult.secure_url,
         userId,
       ]);
     }
-    /* ---------- update tags ---------- */
+
+    // update tags
     await db.query("DELETE FROM user_tags WHERE user_id = ?", [userId]);
 
     if (tags.length > 0) {
       const values = tags.map((tagId) => [userId, tagId]);
-
-      await db.query("INSERT INTO user_tags (user_id, tag_id) VALUES ?", [
-        values,
-      ]);
+      await db.query(
+        "INSERT INTO user_tags (user_id, tag_id) VALUES ?",
+        [values]
+      );
     }
 
+    // 🔥 fetch latest data
+    const [rows]: any = await db.query(
+      "SELECT id, username, email, image FROM user WHERE id = ? LIMIT 1",
+      [userId]
+    );
+
+    const [tagsRows]: any = await db.query(
+      `SELECT t.id, t.name
+       FROM user_tags ut
+       JOIN tag t ON ut.tag_id = t.id
+       WHERE ut.user_id = ?`,
+      [userId]
+    );
+
     return {
-      success: true,
+      ...rows[0],
+      tags: tagsRows,
     };
+
   } catch (err) {
-    // 🔥 log error จริง ๆ ลง terminal
     console.error("PROFILE PUT ERROR:", err);
     throw err;
   }
