@@ -89,7 +89,7 @@
         </div>
         <!-- =================== เพศ =================== -->
         <div class="flex flex-col w-full">
-          <div class="flex justify-between text-gray-700 text-sm">
+          <div class="flex justify-around text-gray-700 text-sm">
             <label class="flex items-center gap-2">
               <input type="radio" value="1" v-model="form.gender" />
               ชาย
@@ -125,10 +125,11 @@
                 />
               </svg>
               <input
-                ref="birthInput"
                 type="text"
-                placeholder="วันเดือนปีเกิด"
-                class="flex-1 p-3 bg-transparent font-bold focus:outline-none text-[#737373]"
+                :value="age ? `${age} ปี` : ''"
+                readonly
+                placeholder="อายุ"
+                class="flex-1 p-3 bg-transparent focus:outline-none text-black font-bold"
               />
             </div>
           </div>
@@ -186,8 +187,9 @@
 
               <input
                 :type="showPassword ? 'text' : 'password'"
-                placeholder="รหัสผ่าน"
                 v-model="form.password"
+                autocomplete="new-password"
+                inputmode="text"
                 class="flex-1 bg-transparent focus:outline-none text-black font-bold"
               />
             </div>

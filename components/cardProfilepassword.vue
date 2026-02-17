@@ -8,7 +8,7 @@
         <label class="text-white text-sm font-bold">รหัสผ่าน</label>
         <input
           type="password"
-          value="********"
+          value="passwordhidden"
           disabled
           class="w-full h-11 sm:h-12 bg-white/20 rounded-2xl px-4 text-white cursor-not-allowed"
         />

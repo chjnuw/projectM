@@ -5,7 +5,7 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
     >
       <button
-        class="fixed top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full cursor-pointer text-white/70 hover:text-white transition duration-200"
+        class="fixed top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full cursor-pointer text-white/70 hover:text-white transition duration-200 z-50"
         @click="$emit('close')"
       >
         <FontAwesomeIcon icon="fa-solid fa-xmark" />
@@ -13,18 +13,20 @@
       <SkeletonpopActorPopupSkeleton v-if="loading" />
       <template v-else>
         <div
-          class="w-[65%] h-[80%] bg-[#0B0A0A] rounded-2xl grid grid-cols-4 overflow-y-auto custom-scrollbar"
+          class="w-[95%] md:w-[65%] h-[95%] md:h-[80%] bg-[#0B0A0A] rounded-2xl grid grid-cols-1 md:grid-cols-4 overflow-y-auto custom-scrollbar"
         >
           <!-- ================= Sidebar ================= -->
 
-          <div class="col-span-1 bg-black p-4 text-white flex flex-col">
+          <div
+            class="md:col-span-1 bg-black p-4 text-white flex flex-col items-center md:items-start"
+          >
             <img
               :src="
                 actorDetail.profile_path
                   ? 'https://image.tmdb.org/t/p/w300' + actorDetail.profile_path
                   : 'img/no-profile.png'
               "
-              class="w-48 aspect-[2/3] object-cover rounded-xl border"
+              class="w-32 md:w-48 aspect-[2/3] object-cover rounded-xl border"
             />
 
             <h2 class="text-xl font-bold mt-4 text-center">
@@ -135,7 +137,9 @@
           </div>
 
           <!-- ================= Main ================= -->
-          <div class="col-span-3 p-6 text-white relative custom-scrollbar">
+          <div
+            class="md:col-span-3 p-4 md:p-6 text-white relative custom-scrollbar"
+          >
             <h3 class="text-2xl font-bold mb-4">ชีวประวัติ</h3>
 
             <div class="space-y-3 text-m leading-relaxed indent-8">
@@ -166,7 +170,7 @@
 
             <!-- ===== ประวัติการทำงาน 1===== -->
             <div class="mt-8 w-full text-left">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-4">
                 <h2 class="font-bold text-xl mb-3 text-white">
                   ประวัติการทำงาน
                 </h2>
@@ -212,7 +216,7 @@
                     <SafeImage
                       :src="tmdbImage(item.poster_path, 'w342')"
                       :alt="item.title"
-                      class=" w-12 aspect-[2/3] rounded-md object-cover flex-shrink-0"
+                      class="w-12 aspect-[2/3] rounded-md object-cover flex-shrink-0"
                     />
 
                     <!-- Info -->

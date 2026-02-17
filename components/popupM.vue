@@ -7,28 +7,28 @@
   >
     <div
       v-if="selectedId && selectedItem"
-      class="fixed inset-0 flex items-center justify-center z-50 min-h-screen bg-black/50 backdrop-blur-sm"
+      class="fixed inset-0 flex items-end md:items-center justify-center z-[999] min-h-screen bg-black/50 backdrop-blur-sm my-8 md:my-6"
     >
       <transition name="popup-swap" mode="out-in">
         <SkeletonpopSkeletonpopupM v-if="isLoading" />
         <div
           v-else
           ref="popupScroll"
-          class="rounded-2xl w-[65%] h-[80%] overflow-y-auto overflow-x-hidden grid grid-cols-4 custom-scrollbar"
+          class="rounded-t-2xl md:rounded-2xl w-full md:w-[65%] h-[95vh] md:h-[80%] bg-[#0B0A0A] overflow-y-auto overflow-x-hidden flex flex-col md:grid md:grid-cols-4 custom-scrollbar"
         >
           <!-- =========================================================================================================== -->
           <!-- sidebar -->
           <!-- ==========================================================================================================  -->
           <div
-            class="col-span-1 bg-[#000000] p-4 text-white flex flex-col items-center"
+            class="md:col-span-1 bg-[#000000] p-3 md:p-4 text-white flex flex-col items-center order-2 md:order-1 "
           >
             <img
               :src="selectedItem.poster"
               loading="lazy"
-              class="rounded-xl aspect-[2/3] w-64 border-2 object-cover"
+              class="rounded-xl aspect-[2/3] w-28 sm:w-32 md:w-64 border-2 object-cover hidden md:block"
             />
-            <div class="text-center mt-4 mb-2">
-              <p class="w-full text-2xl font-bold text-center">
+            <div class="text-center mt-4 mb-2 hidden md:block">
+              <p class="w-full text-lg sm:text-xl md:text-2xl text-center">
                 {{ selectedItem.titleEN }}
               </p>
               <p
@@ -38,11 +38,13 @@
                 {{ selectedItem.title }}
               </p>
             </div>
-            <div class="p-2 items-center justify-center mb-3">
-              <div class="flex items-center justify-center gap-2 text-sm">
+            <div class="p-2 items-center justify-center mb-3 w-full">
+              <div
+                class="flex items-center justify-center gap-2 text-xs sm:text-sm hidden md:flex"
+              >
                 <span
                   v-if="selectedItem?.ageRating"
-                  class="px-2 py-1 border rounded-md font-bold backdrop-blur-md text-xs"
+                  class="px-2 py-1 border rounded-md font-bold backdrop-blur-md text-xs hidden md:flex"
                   :class="normalizeAgeRating(selectedItem.ageRating).class"
                 >
                   {{ normalizeAgeRating(selectedItem.ageRating).label }}
@@ -50,11 +52,11 @@
                 <span>·</span>
                 <p class="">{{ selectedItem.time }}</p>
               </div>
-              <div class="flex items-center justify-center gap-2 my-3 text-sm">
+              <div class="flex items-center justify-center gap-2 my-3 text-sm hidden md:flex">
                 <p class="">{{ selectedItem.release }}</p>
               </div>
 
-              <div class="flex flex-wrap gap-1 my-4 p-2">
+              <div class="flex flex-wrap gap-1 my-4 p-2 hidden md:flex">
                 <button
                   v-for="tag in selectedItem.tags"
                   :key="tag.id"
@@ -65,7 +67,7 @@
                 </button>
               </div>
 
-              <div class="grid grid-cols gap-1 text-md mt-4 mb-2">
+              <div class="grid grid-cols-1 gap-1 text-md mt-4 mb-2">
                 <div>
                   <p class="text-gray-400">ชื่อดั้งเดิม</p>
                   <p class="p-2">{{ selectedItem.originalTitle }}</p>
@@ -107,7 +109,7 @@
               </div>
             </div>
             <div
-              class="w-40 aspect-[2/3] bg-white rounded-2xl flex flex-col mt-3"
+              class="w-40 aspect-[2/3] bg-white rounded-2xl flex flex-col mt-3 hidden md:flex"
             >
               <img
                 :src="
@@ -128,10 +130,68 @@
           <!-- =========================================================================================================== -->
           <!-- main -->
           <!-- ==========================================================================================================  -->
+
           <div
-            class="bg-[#0B0A0A] text-white col-span-3 flex flex-col items-center"
+            class="justify-center items-center flex flex-col block md:hidden py-6"
           >
-            <div class="relative w-full aspect-video">
+            <img
+              :src="selectedItem.poster"
+              loading="lazy"
+              class="rounded-xl aspect-[2/3] w-28 sm:w-32 md:w-64 border-2 object-cover"
+            />
+            <div class="text-center mt-4 mb-2">
+              <p class="w-full text-lg sm:text-xl md:text-2xl text-center">
+                {{ selectedItem.titleEN }}
+              </p>
+              <p
+                v-if="selectedItem.titleEN !== selectedItem.title"
+                class="text-sm text-gray-400 mt-2"
+              >
+                {{ selectedItem.title }}
+              </p>
+            </div>
+            <div class="p-2 items-center justify-center mb-3">
+              <div
+                class="flex items-center justify-center gap-2 text-xs sm:text-sm"
+              >
+                <span
+                  v-if="selectedItem?.ageRating"
+                  class="px-2 py-1 border rounded-md font-bold backdrop-blur-md text-xs"
+                  :class="normalizeAgeRating(selectedItem.ageRating).class"
+                >
+                  {{ normalizeAgeRating(selectedItem.ageRating).label }}
+                </span>
+                <span>·</span>
+                <p class="">{{ selectedItem.time }}</p>
+              </div>
+              <div class="flex items-center justify-center gap-2 my-3 text-sm">
+                <p class="">{{ selectedItem.release }}</p>
+              </div>
+
+              <div class="flex flex-wrap gap-1 my-4 p-2">
+                <button
+                  v-for="tag in selectedItem.tags"
+                  :key="tag.id"
+                  @click="goToCategory(tag)"
+                  class="p-2 bg-gray-700 rounded-md hover:bg-gray-800 transition cursor-pointer text-xs"
+                >
+                  # {{ tag.name }}
+                </button>
+              </div>
+            </div>
+
+            <button
+              class="absolute md:fixed top-3 right-3 md:top-4 md:right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm md:text-base active:scale-90 transition duration-200"
+              @click="$emit('close')"
+            >
+              <FontAwesomeIcon icon="fa-solid fa-xmark" />
+            </button>
+          </div>
+
+          <div
+            class="bg-[#0B0A0A] text-white md:col-span-3 flex flex-col items-center order-1 md:order-2"
+          >
+            <div class="relative w-full aspect-video px-2 md:px-0">
               <iframe
                 v-if="isTrailerActive && trailer"
                 :src="trailer"
@@ -151,7 +211,7 @@
                 class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none"
               ></div>
               <button
-                class="fixed top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full cursor-pointer text-white/70 hover:text-white transition duration-200"
+                class="hidden md:block absolute md:fixed top-3 right-3 md:top-4 md:right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm md:text-base active:scale-90 transition duration-200"
                 @click="$emit('close')"
               >
                 <FontAwesomeIcon icon="fa-solid fa-xmark" />
@@ -167,7 +227,7 @@
                 <div
                   v-if="hasTrailer"
                   ref="trailerThumbRef"
-                  class="flex-shrink-0 h-20 w-36 cursor-pointer relative"
+                  class="flex-shrink-0 h-16 w-28 sm:h-18 sm:w-32 md:h-20 md:w-36 cursor-pointer relative"
                   :class="
                     isTrailerActive ? 'border-green-500' : 'border-transparent'
                   "
@@ -197,7 +257,7 @@
                   v-for="img in filteredImages"
                   :key="img"
                   loading="lazy"
-                  class="flex-shrink-0 h-20 cursor-pointer"
+                  class="flex-shrink-0 h-16 sm:h-18 md:h-20 cursor-pointer"
                   :class="{
                     'border-4 border-green-500':
                       currentImage === img && !isTrailerActive,
@@ -240,9 +300,11 @@
             </div>
 
             <div class="w-[95%] mb-6">
-              <div class="flex mb-6 justify-between">
-                <div class="flex gap-2 opacity-80 justify-center items-center">
-                  <p class="text-2xl">
+              <div
+                class="flex flex-col sm:flex-row gap-4 sm:gap-0 mb-6 justify-between"
+              >
+                <div class="flex gap-2 opacity-80 justify-start items-center">
+                  <p class="text-lg sm:text-xl md:text-2xl">
                     ⭐
                     {{
                       selectedItem.vote_average
@@ -258,7 +320,7 @@
                   <FontAwesomeIcon
                     icon="fa-solid fa-heart"
                     :class="[
-                      'text-2xl cursor-pointer p-2 transition-colors',
+                      'text-xl sm:text-2xl cursor-pointer p-2 active:scale-90 transition-colors',
                       isFavorite
                         ? 'text-pink-500'
                         : 'text-white hover:text-pink-500',
@@ -289,16 +351,20 @@
                 </div>
               </div>
 
-              <p class="my-2 text-2xl font-bold">เรื่องย่อ</p>
+              <p class="my-2 text-lg sm:text-xl md:text-2xl font-bold">
+                เรื่องย่อ
+              </p>
               <p class="p-2 indent-8">
                 {{ selectedItem.description }}
               </p>
 
               <div class="justify-between flex items-center mt-4 mb-2 p-2">
-                <h2 class="font-bold text-2xl">นักแสดง</h2>
+                <h2 class="my-2 text-lg sm:text-xl md:text-2xl font-bold">
+                  นักแสดง
+                </h2>
                 <NuxtLink
                   :to="`/movie/${selectedItem.id}/FullCastAndCrew`"
-                  class="text-[#A0E13E] hover:underline"
+                  class="text-xs md:text-xl text-[#A0E13E] hover:underline"
                 >
                   ดูนักแสดงและทีมงานทั้งหมด →
                 </NuxtLink>
@@ -306,7 +372,7 @@
 
               <div
                 v-if="actors.length"
-                class="flex gap-3 overflow-x-auto custom-scrollbar p-4"
+                class="flex gap-3 overflow-x-auto custom-scrollbar p-2 sm:p-4"
               >
                 <ImgNameAct
                   v-for="a in filteredActors"
@@ -323,7 +389,9 @@
                 ไม่มีข้อมูลนักแสดง
               </p>
 
-              <h2 class="font-bold text-2xl mt-4 mb-2 p-2">ทีมงาน</h2>
+              <h2 class="my-2 text-lg sm:text-xl md:text-2xl font-bold">
+                ทีมงาน
+              </h2>
               <div
                 v-if="crew.length"
                 class="flex gap-3 overflow-x-auto custom-scrollbar p-4"
@@ -344,7 +412,9 @@
               </p>
 
               <div v-if="similarMovies.length" class="w-full mt-6">
-                <h2 class="text-2xl font-bold mt-4 mb-2">หนังที่คล้ายกัน</h2>
+                <h2 class="my-2 text-lg sm:text-xl md:text-2xl font-bold">
+                  หนังที่คล้ายกัน
+                </h2>
                 <div
                   class="flex gap-2 overflow-x-auto overflow-y-hidden custom-scrollbar py-4 mx-4 px-2"
                 >
@@ -378,6 +448,7 @@
       </transition>
     </div>
   </transition>
+
   <PopupA
     v-if="showActorPopup && selectedActorId"
     :actor-id="selectedActorId"
