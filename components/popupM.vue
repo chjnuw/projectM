@@ -7,7 +7,7 @@
   >
     <div
       v-if="selectedId && selectedItem"
-      class="fixed inset-0 flex items-end md:items-center justify-center z-[999] min-h-screen bg-black/50 backdrop-blur-sm my-8 md:my-6"
+      class="fixed inset-0 flex items-end md:items-center justify-center z-[999] min-h-screen bg-black/50 backdrop-blur-sm "
     >
       <transition name="popup-swap" mode="out-in">
         <SkeletonpopSkeletonpopupM v-if="isLoading" />
