@@ -125,10 +125,10 @@
               class="flex w-full sm:w-auto bg-white/5 backdrop-blur rounded-full p-1 border border-white/10"
             >
               <button
-                @click="sortMode = 'default'"
+                @click="genderSortMode = 'default'"
                 :class="[
                   'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  sortMode === 'default'
+                  genderSortMode === 'default'
                     ? 'bg-green-600 text-white shadow'
                     : 'text-gray-400 hover:text-white cursor-pointer',
                 ]"
@@ -176,10 +176,10 @@
               class="flex w-full sm:w-auto bg-white/5 backdrop-blur rounded-full p-1 border border-white/10"
             >
               <button
-                @click="sortMode = 'default'"
+                @click="genderSortMode = 'default'"
                 :class="[
                   'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  sortMode === 'default'
+                  genderSortMode === 'default'
                     ? 'bg-green-600 text-white shadow'
                     : 'text-gray-400 hover:text-white cursor-pointer',
                 ]"
@@ -227,10 +227,10 @@
               class="flex w-full sm:w-auto bg-white/5 backdrop-blur rounded-full p-1 border border-white/10"
             >
               <button
-                @click="sortMode = 'default'"
+                @click="genderSortMode = 'default'"
                 :class="[
                   'flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm rounded-full transition-all duration-200 active:scale-95',
-                  sortMode === 'default'
+                  genderSortMode === 'default'
                     ? 'bg-green-600 text-white shadow'
                     : 'text-gray-400 hover:text-white cursor-pointer',
                 ]"
